@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Service;
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -12,8 +14,8 @@ class SentryConfigurationService
     /**
      * @param $path
      * @return mixed
-     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException
-     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
     protected static function getExtensionConfiguration(string $path)
     {
@@ -37,7 +39,7 @@ class SentryConfigurationService
 
     protected static function getNormalizedApplicationContext()
     {
-        return preg_replace("/[^a-zA-Z0-9]/", "-", Environment::getContext());
+        return preg_replace("/[^a-zA-Z0-9]/", "-", (string)Environment::getContext());
     }
 
     public static function getProjectRoot()

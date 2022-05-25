@@ -10,9 +10,20 @@
 		"typo3/cms-extbase": "^9.5 || ^10.4 || ^11.5",
 		"sentry/sdk": "^3.1"
 	},
+	"require-dev": {
+		"ext-sqlite3": "*",
+		"nimut/testing-framework": "^6.0",
+		"nimut/phpunit-merger": "^1.1",
+		"phpunit/phpcov": "^8.2"
+	},
 	"autoload": {
 		"psr-4": {
 			"Netlogix\\Nxerrorhandler\\": "Classes"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Netlogix\\Nxerrorhandler\\Tests\\": "Tests/"
 		}
 	},
 	"extra": {

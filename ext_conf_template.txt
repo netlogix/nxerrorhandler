@@ -6,3 +6,9 @@ skipForStatusCodes =
 
 # cat=sentry/; type=options[]; label=Exception handler components
 exceptionHandlerComponents =
+
+# cat=sentry/; type=string; label=Blacklist for Exception messages
+messageBlacklistRegex =
+
+# cat=sentry/; type=boolean; label=Report database errors
+reportDatabaseConnectionErrors =
