@@ -1,0 +1,3 @@
+config {
+	contentObjectExceptionHandler = Netlogix\Nxerrorhandler\ErrorHandler\ContentObjectExceptionHandler
+}

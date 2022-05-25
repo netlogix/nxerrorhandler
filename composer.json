@@ -1,0 +1,33 @@
+{
+	"name": "netlogix/nxerrorhandler",
+	"description": "Error handler with static pages for TYPO3",
+	"type": "typo3-cms-extension",
+	"license": "MIT",
+	"require": {
+		"php": "^7.4 || ^8.0 || ^8.1",
+		"typo3/cms-core": "^9.5 || ^10.4 || ^11.5",
+		"typo3/cms-frontend": "^9.5.15 || ^10.4 || ^11.5",
+		"typo3/cms-extbase": "^9.5 || ^10.4 || ^11.5",
+		"sentry/sdk": "^3.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"Netlogix\\Nxerrorhandler\\": "Classes"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "nxerrorhandler",
+			"web-dir": ".Build/Web",
+			"cms-package-dir": "{$vendor-dir}/typo3/cms"
+		}
+	},
+	"config": {
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin",
+		"allow-plugins": {
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true
+		}
+	}
+}
