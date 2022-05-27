@@ -1,7 +1,17 @@
 # TYPO3 extension nxerrorhandler
 
-Improves error handling in TYPO3. Can send exceptions by mail or to sentry and uses
+[![stability-wip](https://img.shields.io/badge/stability-wip-lightgrey.svg)](hhttps://github.com/netlogix/nxerrorhandler)
+[![TYPO3 V9](https://img.shields.io/badge/TYPO3-9-orange.svg)](https://get.typo3.org/version/9)
+[![TYPO3 V10](https://img.shields.io/badge/TYPO3-10-orange.svg)](https://get.typo3.org/version/10)
+[![TYPO3 V11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg)](https://php.net/)
+[![GitHub CI status](https://github.com/netlogix/nxerrorhandler/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/netlogix/nxerrorhandler/actions)
+
+Improves error handling in TYPO3. Can send exceptions by mail or to sentry and
+uses
 statically rendered error documents for output to reduce strain on the server.
+
+This extension is a work in progress.
 
 ## Usage
 
