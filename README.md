@@ -42,6 +42,17 @@ return [
     ],
 ];
 ```
+
+Note: this will register the ExceptionHandler for all contexts including backend
+requests. If you want to restrict it to frontend requests only then add this
+line to `AdditionalConfiguration.php` instead:
+
+```php
+    if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_FE) {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['productionExceptionHandler'] = \Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler::class;
+    }
+```
+
 Add this to your `config/sites/sitename/config.yaml`
 
 ```yaml
