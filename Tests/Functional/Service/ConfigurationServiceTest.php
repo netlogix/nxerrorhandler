@@ -21,10 +21,6 @@ class ConfigurationServiceTest extends FunctionalTestCase
                 'exceptionHandlerComponents' => [
                     ExtbaseArgumentsToBadRequestComponent::class,
                 ],
-                'sentry' => ['dsn' => 'sentry.example.invalid/12345'],
-                'skipForStatusCodes' => [
-                    '404',
-                ],
             ],
         ]
     ];
@@ -45,16 +41,6 @@ class ConfigurationServiceTest extends FunctionalTestCase
     public function itCanGetReportDatabaseConnectionErrors()
     {
         self::assertTrue(ConfigurationService::reportDatabaseConnectionErrors());
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itCanGetSkipForStatusCodes()
-    {
-        self::assertNotEmpty(ConfigurationService::getSkipForStatusCodes());
-        self::assertEquals('404', ConfigurationService::getSkipForStatusCodes()[0]);
     }
 
     /**

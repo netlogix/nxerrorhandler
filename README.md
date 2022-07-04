@@ -1,14 +1,12 @@
 # TYPO3 extension nxerrorhandler
 
 [![stability-wip](https://img.shields.io/badge/stability-wip-lightgrey.svg)](hhttps://github.com/netlogix/nxerrorhandler)
-[![TYPO3 V9](https://img.shields.io/badge/TYPO3-9-orange.svg)](https://get.typo3.org/version/9)
 [![TYPO3 V10](https://img.shields.io/badge/TYPO3-10-orange.svg)](https://get.typo3.org/version/10)
 [![TYPO3 V11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg)](https://php.net/)
 [![GitHub CI status](https://github.com/netlogix/nxerrorhandler/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/netlogix/nxerrorhandler/actions)
 
-Improves error handling in TYPO3. Can send exceptions by mail or to sentry and
-uses
+Improves error handling in TYPO3. Can send exceptions by mail and uses
 statically rendered error documents for output to reduce strain on the server.
 
 This extension is a work in progress.
@@ -21,15 +19,8 @@ Add this to your `LocalConfiguration.php`
 return [
     'EXTENSIONS' => [
         'nxerrorhandler' => [
-            'sentry' => [
-                'dsn' => '',
-            ],
-            'skipForStatusCodes' => [
-                '404'
-            ],
             'exceptionHandlerComponents' => [
                 \Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent::class,
-                \Netlogix\Nxerrorhandler\ErrorHandler\Component\SentryComponent::class,
                 \Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent::class,
             ],
         ]
@@ -69,11 +60,4 @@ errorHandling:
     errorHandler: PHP
     errorPhpClassFQCN: Netlogix\Nxerrorhandler\Error\PageContentErrorHandler
     errorContentSource: 't3://page?uid=99'
-```
-
-The new Sentry SDK 3.x has some environment variables which can be used, for example in a .env file:
-```apacheconfig
-SENTRY_DSN='http://public_key@your-sentry-server.com/project-id'
-SENTRY_RELEASE='1.0.7'
-SENTRY_ENVIRONMENT='Staging'
 ```

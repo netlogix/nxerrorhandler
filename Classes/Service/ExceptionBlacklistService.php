@@ -2,12 +2,13 @@
 
 namespace Netlogix\Nxerrorhandler\Service;
 
+use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ExceptionBlacklistService
 {
-    public static function shouldHandleException(\Throwable $exception): bool
+    public static function shouldHandleException(Throwable $exception): bool
     {
         if (self::messageMatchesBlacklistRegex($exception->getMessage())) {
             return false;
@@ -20,14 +21,6 @@ class ExceptionBlacklistService
             }
         }
 
-        return true;
-    }
-
-    public static function shouldHandleStatusCode(int $statusCode): bool
-    {
-        if (in_array($statusCode, ConfigurationService::getSkipForStatusCodes())) {
-            return false;
-        }
         return true;
     }
 

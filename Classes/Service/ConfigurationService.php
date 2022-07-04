@@ -2,6 +2,8 @@
 
 namespace Netlogix\Nxerrorhandler\Service;
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -13,8 +15,6 @@ class ConfigurationService
 
     const REPORT_DATABASE_CONNECTION_ERRORS = 'reportDatabaseConnectionErrors';
 
-    const SKIP_FOR_STATUS_CODES = 'skipForStatusCodes';
-
     const EXCEPTION_HANDLER_COMPONENTS = 'exceptionHandlerComponents';
 
     const TARGET_DIRECTORY = '/tx_nxerrorhandler/';
@@ -22,8 +22,8 @@ class ConfigurationService
     /**
      * @param $path
      * @return mixed
-     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException
-     * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
     protected static function getExtensionConfiguration(string $path)
     {
@@ -38,11 +38,6 @@ class ConfigurationService
     public static function reportDatabaseConnectionErrors(): bool
     {
         return (bool)self::getExtensionConfiguration(self::REPORT_DATABASE_CONNECTION_ERRORS);
-    }
-
-    public static function getSkipForStatusCodes(): array
-    {
-        return (array)self::getExtensionConfiguration(self::SKIP_FOR_STATUS_CODES);
     }
 
     public static function getExceptionHandlerComponents(): array

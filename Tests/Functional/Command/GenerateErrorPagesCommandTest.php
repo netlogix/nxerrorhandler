@@ -26,11 +26,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
                     'core' => [
                         // disable cache for site configurations
                         'backend' => NullBackend::class
-                    ],
-                    // this is needed for TYPO3 9.5. the `cache_` prefix was dropped with TYPO3 10
-                    'cache_core' => [
-                        // disable cache for site configurations
-                        'backend' => NullBackend::class
                     ]
                 ],
             ],

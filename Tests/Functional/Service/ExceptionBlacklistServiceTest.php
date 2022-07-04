@@ -22,10 +22,6 @@ class ExceptionBlacklistServiceTest extends FunctionalTestCase
                 'exceptionHandlerComponents' => [
                     ExtbaseArgumentsToBadRequestComponent::class,
                 ],
-                'sentry' => ['dsn' => 'sentry.example.invalid/12345'],
-                'skipForStatusCodes' => [
-                    '404',
-                ],
             ],
         ]
     ];
@@ -51,27 +47,5 @@ class ExceptionBlacklistServiceTest extends FunctionalTestCase
 
         self::assertFalse(ExceptionBlacklistService::shouldHandleException($ex));
     }
-
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itShouldHandleNonBlacklistedStatusCode()
-    {
-        $code = 419;
-
-        self::assertTrue(ExceptionBlacklistService::shouldHandleStatusCode($code));
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itShouldNotHandleBlacklistedStatusCode()
-    {
-        self::assertFalse(ExceptionBlacklistService::shouldHandleStatusCode(404));
-    }
-
 
 }
