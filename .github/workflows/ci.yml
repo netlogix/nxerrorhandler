@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [ 7.4, 8.0, 8.1 ]
-        typo3: [ 9.5,  10.4, 11.5 ]
+        typo3: [ 10.4, 11.5 ]
 
         exclude:
           # do not run TYPO3 10.4 on PHP 8
@@ -26,12 +26,6 @@ jobs:
           # do not run TYPO3 10.4 on PHP 8.1
           - php: 8.1
             typo3: 10.4
-          # do not run TYPO3 9.5 on PHP 8
-          - php: 8.0
-            typo3: 9.5
-          # do not run TYPO3 9.5 on PHP 8.1
-          - php: 8.1
-            typo3: 9.5
 
     steps:
       - name: Checkout
