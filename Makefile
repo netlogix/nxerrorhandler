@@ -4,6 +4,7 @@ clean:
 	rm -rf .Build/
 
 deps:
+	mkdir -p .Build/logs/coverage/
 	composer install
 
 update:
