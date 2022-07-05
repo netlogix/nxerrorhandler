@@ -1,6 +1,7 @@
 <?php
 namespace Netlogix\Nxerrorhandler\ErrorHandler;
 
+use ErrorException;
 use TYPO3\CMS\Core\Error\ExceptionHandlerInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,24 +38,48 @@ class FatalErrorHandler implements SingletonInterface
      */
     public function handleFatalError()
     {
-        if (($lastError = error_get_last()) === null) {
+        // always free reserved memory even if this handler does nothing
+        unset($this->reservedMemory);
+
+        $lastError = $this->getLastError();
+
+        if ($lastError === null) {
             return;
         }
 
-        unset($this->reservedMemory);
-
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['errors']['exceptionHandler'])) {
+        if ($this->getExceptionHandlerClassName() == null) {
             return;
         }
 
         $errors = E_ERROR | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_STRICT;
 
         if ($lastError['type'] & $errors) {
-            $e = new \ErrorException(@$lastError['message'], @$lastError['type'], @$lastError['type'], @$lastError['file'], @$lastError['line']);
-            $exceptionHandler = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['errors']['exceptionHandler']);
+            $e = new ErrorException(
+                @$lastError['message'],
+                @$lastError['type'],
+                @$lastError['type'],
+                @$lastError['file'],
+                @$lastError['line']
+            );
+            $exceptionHandler = GeneralUtility::makeInstance($this->getExceptionHandlerClassName());
             assert($exceptionHandler instanceof ExceptionHandlerInterface);
             $exceptionHandler->handleException($e);
         }
+    }
+
+    /**
+     * Wrapper for better testability
+     *
+     * @return array|null
+     */
+    protected function getLastError(): ?array
+    {
+        return error_get_last();
+    }
+
+    protected function getExceptionHandlerClassName(): ?string
+    {
+        return $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['errors']['exceptionHandler'] ?? null;
     }
 
     /**
