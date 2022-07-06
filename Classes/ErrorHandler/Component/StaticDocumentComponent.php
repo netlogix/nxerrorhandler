@@ -41,21 +41,53 @@ class StaticDocumentComponent extends AbstractComponent
 			$errorHandlingConfiguration[(int)$code] = $configuration;
 		}
 
-		if (isset($errorHandlingConfiguration[$errorCode])) {
-			$rootPageId = $site->getRootPageId();
+        if (isset($errorHandlingConfiguration[$errorCode])) {
+            $rootPageId = $site->getRootPageId();
 
-			$errorDocumentPath = ConfigurationService::getErrorDocumentFilePath();
-			$errorDocumentFileNames = [
-				sprintf($errorDocumentPath, $errorCode, $siteLanguage->getBase()->getHost(), $rootPageId, $siteLanguage->getLanguageId()),
-				sprintf($errorDocumentPath, $errorCode, $siteLanguage->getBase()->getHost(), $rootPageId, $site->getDefaultLanguage()->getLanguageId()),
-				sprintf($errorDocumentPath, $errorCode, $site->getBase()->getHost(), $rootPageId, $site->getDefaultLanguage()->getLanguageId()),
-			];
-			foreach ($errorDocumentFileNames as $errorDocumentFileName) {
-				if (file_exists($errorDocumentFileName) && is_readable($errorDocumentFileName)) {
-					return GeneralUtility::getUrl($errorDocumentFileName);
-				}
-			}
-		}
-		return '';
-	}
+            $errorDocumentPath = ConfigurationService::getErrorDocumentFilePath();
+            $errorDocumentFileNames = [
+                sprintf(
+                    $errorDocumentPath,
+                    $errorCode,
+                    $siteLanguage->getBase()->getHost(),
+                    $rootPageId,
+                    $siteLanguage->getLanguageId()
+                ),
+                sprintf(
+                    $errorDocumentPath,
+                    $errorCode,
+                    $siteLanguage->getBase()->getHost(),
+                    $rootPageId,
+                    $site->getDefaultLanguage()->getLanguageId()
+                ),
+                sprintf(
+                    $errorDocumentPath,
+                    $errorCode,
+                    $site->getBase()->getHost(),
+                    $rootPageId,
+                    $site->getDefaultLanguage()->getLanguageId()
+                ),
+            ];
+            foreach ($errorDocumentFileNames as $errorDocumentFileName) {
+                $content = $this->getContentFromPath($errorDocumentFileName);
+                if ($content) {
+                    return $content;
+                }
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param string $errorDocumentFileName
+     * @return string|null
+     */
+    protected function getContentFromPath(string $errorDocumentFileName): ?string
+    {
+        if (file_exists($errorDocumentFileName) && is_readable($errorDocumentFileName)) {
+            return GeneralUtility::getUrl($errorDocumentFileName);
+        }
+
+        return null;
+    }
 }
