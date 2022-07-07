@@ -8,11 +8,28 @@ use Exception;
 use Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler;
 use Netlogix\Nxerrorhandler\Tests\Unit\Fixtures\ComponentFixture;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Controller\ErrorPageController;
 use TYPO3\CMS\Core\Error\Http\StatusException;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 
 class GeneralExceptionHandlerTest extends UnitTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://www.example.com/');
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($GLOBALS['TYPO3_REQUEST']);
+    }
+
     /**
      * @test
      * @dataProvider statusHeaderDataProvider
@@ -218,5 +235,111 @@ class GeneralExceptionHandlerTest extends UnitTestCase
         $res = http_response_code();
 
         self::assertEquals($res, $code);
+    }
+
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function itCanGetErrorDocumentFromComponent()
+    {
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $exception = new Exception(uniqid(), time());
+
+        $content = uniqid('content_');
+        $code = rand(100, 599);
+
+        $componentMock = $this->getMockBuilder(ComponentFixture::class)
+            ->onlyMethods(['getOutput'])
+            ->getMock();
+        $componentMock->expects(self::once())->method('getOutput')->willReturn($content);
+
+        $subject->_set('components', [$componentMock]);
+
+        $res = $subject->_call('getErrorDocument', $code, uniqid('message_'), $exception);
+
+        self::assertEquals($content, $res);
+    }
+
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function itFallsBackToErrorDocumentFromErrorPageController()
+    {
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $exception = new Exception(uniqid(), time());
+
+        $content = uniqid('content_');
+        $code = rand(100, 599);
+
+        $controllerMock = $this->getMockBuilder(ErrorPageController::class)
+            ->onlyMethods(['errorAction'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $controllerMock->expects(self::once())->method('errorAction')->willReturn($content);
+        GeneralUtility::addInstance(ErrorPageController::class, $controllerMock);
+
+        $subject->_set('components', []);
+
+        $res = $subject->_call('getErrorDocument', $code, uniqid('message_'), $exception);
+
+        self::assertEquals($content, $res);
+    }
+
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function itThrowsExceptionIfNoComponentIsRegistered()
+    {
+        $this->expectException(\Netlogix\Nxerrorhandler\Exception\Exception::class);
+        $this->expectExceptionCode(1395075649);
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [];
+
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+
+        $subject->_call('initialize');
+    }
+
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function itThrowsExceptionIfConfiguredComponentDoesnotExist()
+    {
+        $this->expectException(\Netlogix\Nxerrorhandler\Exception\Exception::class);
+        $this->expectExceptionCode(1395074867);
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = ['NotAClass'];
+
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+
+        $subject->_call('initialize');
+    }
+
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function itLoadsComponentsFromConfiguration()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [ComponentFixture::class];
+
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+
+        $subject->_call('initialize');
+
+        $components = $subject->_get('components');
+
+        self::assertNotEmpty($components);
+        self::assertCount(1, $components);
+        self::assertInstanceOf(ComponentFixture::class, $components[0]);
     }
 }

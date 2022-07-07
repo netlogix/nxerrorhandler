@@ -80,12 +80,13 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
 
     protected function initialize()
     {
-        if ($this->components === null) {
-            $this->components = [];
+        if (empty($this->components)) {
             if (!empty(ConfigurationService::getExceptionHandlerComponents())) {
                 foreach (ConfigurationService::getExceptionHandlerComponents() as $componentClass) {
                     if (!class_exists($componentClass)) {
-                        throw new Exception('Error handler component ' . $componentClass . ' does not exist',1395074867);
+                        throw new Exception(
+                            'Error handler component ' . $componentClass . ' does not exist', 1395074867
+                        );
                     }
                     $this->components[] = GeneralUtility::makeInstance($componentClass);
                 }
