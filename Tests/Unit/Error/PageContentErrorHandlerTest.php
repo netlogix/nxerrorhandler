@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
+use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageContentErrorHandlerTest extends UnitTestCase
 {
@@ -45,6 +47,29 @@ class PageContentErrorHandlerTest extends UnitTestCase
         $res = $this->subject->handlePageError($req, 'fooMessage');
 
         self::assertInstanceOf(JsonResponse::class, $res);
+    }
+
+
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function itReturnsStaticContentIfExists()
+    {
+        $mockComponent = $this->getMockBuilder(StaticDocumentComponent::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getOutput'])
+            ->getMock();
+
+        $content = uniqid('content_');
+
+        $mockComponent->expects(self::once())->method('getOutput')->willReturn($content);
+        GeneralUtility::addInstance(StaticDocumentComponent::class, $mockComponent);
+
+        $resp = $this->subject->handlePageError(new ServerRequest(), uniqid('message_'));
+
+        self::assertEquals($content, $resp->getBody()->getContents());
     }
 
     protected function setUp(): void
