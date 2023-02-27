@@ -28,6 +28,9 @@ class StaticDocumentComponent extends AbstractComponent
 	{
 		/** @var Site $site */
 		$site = $request->getAttribute('site');
+		if ($site === null) {
+			return '';
+		}
 		/** @var SiteLanguage $siteLanguage */
 		$siteLanguage = $request->getAttribute('language');
 		if ($siteLanguage === null) {
