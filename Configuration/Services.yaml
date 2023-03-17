@@ -6,3 +6,9 @@ services:
 
   Netlogix\Nxerrorhandler\:
     resource: '../Classes/*'
+
+  Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand:
+    tags:
+      - name: 'console.command'
+        command: 'nxerrorhandler:generateErrorPages'
+        description: 'Generate static error pages'
