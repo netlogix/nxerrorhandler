@@ -42,7 +42,8 @@ class ConfigurationService
 
     public static function getExceptionHandlerComponents(): array
     {
-        return (array)self::getExtensionConfiguration(self::EXCEPTION_HANDLER_COMPONENTS);
+        $components = self::getExtensionConfiguration(self::EXCEPTION_HANDLER_COMPONENTS);
+        return !empty($components) ? (array)$components : [];
     }
 
     public static function getErrorDocumentDirectory(): string

@@ -44,8 +44,8 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             $errorDocument = $this->getErrorDocument($effectiveStatusCode, $message, $exception);
 
             echo $errorDocument;
-        } catch (Throwable $e) {
-            $this->writeLogEntries($e, self::CONTEXT_WEB);
+        } catch (Throwable $t) {
+            $this->writeLogEntries($t, self::CONTEXT_WEB);
             parent::echoExceptionWeb($exception);
         }
     }
@@ -55,15 +55,20 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         try {
             $this->logError($exception, self::CONTEXT_CLI, 500);
             exit(1);
-        } catch (Throwable $e) {
-            $this->writeLogEntries($e, self::CONTEXT_CLI);
+        } catch (Throwable $t) {
+            $this->writeLogEntries($t, self::CONTEXT_CLI);
             parent::echoExceptionCLI($exception);
         }
     }
 
     public function logError(Throwable $exception, string $context, int $statusCode = 500)
     {
-        $this->initialize();
+        try {
+            $this->initialize();
+        } catch (Throwable $t) {
+            $this->writeLogEntries($exception, $context);
+            return;
+        }
 
         $suppressDefaultLogEntries = false;
         foreach ($this->components as $component) {
