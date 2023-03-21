@@ -89,14 +89,19 @@ class GenerateErrorPagesCommand extends Command
                         ->withAttribute('language', $language);
 
                     $resolvedUrl = $this->resolveUrl($request, $configuration['errorContentSource']);
-                    $content = null;
-                    $report = [];
-
-                    $content = GeneralUtility::getUrl($resolvedUrl, 0, null, $report);
-                    if ($content === false && ((int)$report['error'] === -1 || (int)$report['error'] > 200)) {
-                        $message = sprintf('Could not retrieve error page for %1$s errors for root %2$d and language %3$d', $errorCode,
-                            $site->getRootPageId(), $language->getLanguageId());
-                        $this->getExceptionHandler()->logError(new \Exception($message, 1395152041), GeneralExceptionHandler::CONTEXT_CLI);
+                    $content = GeneralUtility::getUrl($resolvedUrl);
+                    if ($content === false || $content === '') {
+                        $message = sprintf(
+                            'Could not retrieve [%1$s] error page on rootPageId [%2$d] with language [%3$d]. Requested url was "$4$s".',
+                            $errorCode,
+                            $site->getRootPageId(),
+                            $language->getLanguageId(),
+                            $resolvedUrl
+                        );
+                        $this->getExceptionHandler()->logError(
+                            new \Exception($message, 1395152041),
+                            GeneralExceptionHandler::CONTEXT_CLI
+                        );
                         continue;
                     }
 
