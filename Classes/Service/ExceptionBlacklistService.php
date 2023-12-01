@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Service;
 
@@ -26,7 +28,6 @@ class ExceptionBlacklistService
 
     /**
      * @param string $message
-     * @return bool
      */
     protected static function messageMatchesBlacklistRegex($message): bool
     {

@@ -10,7 +10,6 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 class ConfigurationServiceTest extends FunctionalTestCase
 {
-
     protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
     protected $configurationToUseInTestInstance = [
@@ -18,16 +17,13 @@ class ConfigurationServiceTest extends FunctionalTestCase
             'nxerrorhandler' => [
                 'reportDatabaseConnectionErrors' => true,
                 'messageBlacklistRegex' => '.*',
-                'exceptionHandlerComponents' => [
-                    ExtbaseArgumentsToBadRequestComponent::class,
-                ],
+                'exceptionHandlerComponents' => [ExtbaseArgumentsToBadRequestComponent::class],
             ],
-        ]
+        ],
     ];
 
     /**
      * @test
-     * @return void
      */
     public function itCanGetMessageBlacklistRegex()
     {
@@ -36,7 +32,6 @@ class ConfigurationServiceTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itCanGetReportDatabaseConnectionErrors()
     {
@@ -45,7 +40,6 @@ class ConfigurationServiceTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itCanGetExceptionHandlerComponents()
     {
@@ -55,5 +49,4 @@ class ConfigurationServiceTest extends FunctionalTestCase
             ConfigurationService::getExceptionHandlerComponents()[0]
         );
     }
-
 }

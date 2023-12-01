@@ -14,13 +14,9 @@ use TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException;
 
 class ExtbaseArgumentsToBadRequestComponentTest extends UnitTestCase
 {
-
     /**
      * @dataProvider exceptionHeaderStatusDataProvider
      * @test
-     * @param Exception $e
-     * @param string $status
-     * @return void
      */
     public function itCanGetAdditionalHeadersForExceptionTypes(Exception $e, string $status)
     {
@@ -33,7 +29,6 @@ class ExtbaseArgumentsToBadRequestComponentTest extends UnitTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itDoesNotReturnStatusForUnmappedException()
     {
@@ -43,24 +38,15 @@ class ExtbaseArgumentsToBadRequestComponentTest extends UnitTestCase
         self::assertCount(0, $res);
     }
 
-
     public function exceptionHeaderStatusDataProvider(): array
     {
         return [
-            TargetNotFoundException::class => [
-                new TargetNotFoundException(),
-                HttpUtility::HTTP_STATUS_404
-            ],
-            PropertyException::class => [
-                new PropertyException(),
-                HttpUtility::HTTP_STATUS_400
-            ],
+            TargetNotFoundException::class => [new TargetNotFoundException(), HttpUtility::HTTP_STATUS_404],
+            PropertyException::class => [new PropertyException(), HttpUtility::HTTP_STATUS_400],
             RequiredArgumentMissingException::class => [
                 new RequiredArgumentMissingException(),
-                HttpUtility::HTTP_STATUS_400
+                HttpUtility::HTTP_STATUS_400,
             ],
-
         ];
     }
 }
-

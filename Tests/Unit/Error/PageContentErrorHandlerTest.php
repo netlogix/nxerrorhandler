@@ -15,7 +15,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageContentErrorHandlerTest extends UnitTestCase
 {
-
     /**
      * @var PageContentErrorHandler|MockObject
      */
@@ -23,7 +22,6 @@ class PageContentErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itReturnsJsonResponseForJsonRequest()
     {
@@ -37,7 +35,6 @@ class PageContentErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itReturnsJsonResponseForJsonApiRequest()
     {
@@ -49,11 +46,8 @@ class PageContentErrorHandlerTest extends UnitTestCase
         self::assertInstanceOf(JsonResponse::class, $res);
     }
 
-
     /**
      * @test
-     *
-     * @return void
      */
     public function itReturnsStaticContentIfExists()
     {
@@ -76,8 +70,10 @@ class PageContentErrorHandlerTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)->addMethods([]
-        )->disableOriginalConstructor()->getMock();
+        $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)->addMethods(
+            []
+        )->disableOriginalConstructor()
+            ->getMock();
         $reflection = new ReflectionClass(PageContentErrorHandler::class);
         $reflection_property = $reflection->getProperty('statusCode');
         $reflection_property->setAccessible(true);

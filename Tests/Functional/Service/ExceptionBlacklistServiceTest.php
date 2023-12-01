@@ -11,7 +11,6 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 class ExceptionBlacklistServiceTest extends FunctionalTestCase
 {
-
     protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
     protected $configurationToUseInTestInstance = [
@@ -19,16 +18,13 @@ class ExceptionBlacklistServiceTest extends FunctionalTestCase
             'nxerrorhandler' => [
                 'reportDatabaseConnectionErrors' => true,
                 'messageBlacklistRegex' => '/eatMe/',
-                'exceptionHandlerComponents' => [
-                    ExtbaseArgumentsToBadRequestComponent::class,
-                ],
+                'exceptionHandlerComponents' => [ExtbaseArgumentsToBadRequestComponent::class],
             ],
-        ]
+        ],
     ];
 
     /**
      * @test
-     * @return void
      */
     public function itShouldHandleNonBlacklistedException()
     {
@@ -39,7 +35,6 @@ class ExceptionBlacklistServiceTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itShouldNotHandleBlacklistedException()
     {
@@ -47,5 +42,4 @@ class ExceptionBlacklistServiceTest extends FunctionalTestCase
 
         self::assertFalse(ExceptionBlacklistService::shouldHandleException($ex));
     }
-
 }

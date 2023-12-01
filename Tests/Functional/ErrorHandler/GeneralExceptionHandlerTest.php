@@ -17,16 +17,12 @@ class GeneralExceptionHandlerTest extends FunctionalTestCase
 
     protected $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
-            'nxerrorhandler' => [
-
-            ],
-        ]
+            'nxerrorhandler' => [],
+        ],
     ];
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itRendersContentFromErrorDocumentForException()
     {
@@ -34,7 +30,9 @@ class GeneralExceptionHandlerTest extends FunctionalTestCase
 
         $this->expectOutputRegex('/' . $message . '/i');
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [ComponentFixture::class];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [
+            ComponentFixture::class,
+        ];
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://www.example.com/');
 
         $subject = GeneralUtility::makeInstance(GeneralExceptionHandler::class);
@@ -43,6 +41,4 @@ class GeneralExceptionHandlerTest extends FunctionalTestCase
 
         $subject->echoExceptionWeb($ex);
     }
-
-
 }

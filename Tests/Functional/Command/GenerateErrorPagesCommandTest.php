@@ -16,7 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
-
     protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
     protected $configurationToUseInTestInstance = [
@@ -25,11 +24,11 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
                 'cacheConfigurations' => [
                     'core' => [
                         // disable cache for site configurations
-                        'backend' => NullBackend::class
-                    ]
+                        'backend' => NullBackend::class,
+                    ],
                 ],
             ],
-        ]
+        ],
     ];
 
     public function setUp(): void
@@ -60,7 +59,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itCreatesErrorDocumentDirectory()
     {
@@ -77,7 +75,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itCreatesHtaccessInErrorDocumentDirectory()
     {
@@ -94,7 +91,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration()
     {
@@ -104,7 +100,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         $subject->run(new StringInput(''), new NullOutput());
 
         $iter = new FilesystemIterator(
-            ConfigurationService::getErrorDocumentDirectory(), FilesystemIterator::SKIP_DOTS
+            ConfigurationService::getErrorDocumentDirectory(),
+            FilesystemIterator::SKIP_DOTS
         );
         // there should only be .htaccess
         self::assertEquals(1, iterator_count($iter));
@@ -112,7 +109,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured()
     {
@@ -125,7 +121,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         $subject->run(new StringInput(''), new NullOutput());
 
         $iter = new FilesystemIterator(
-            ConfigurationService::getErrorDocumentDirectory(), FilesystemIterator::SKIP_DOTS
+            ConfigurationService::getErrorDocumentDirectory(),
+            FilesystemIterator::SKIP_DOTS
         );
         // there should only be .htaccess
         self::assertEquals(1, iterator_count($iter));
@@ -133,14 +130,15 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itCreates400ErrorDocumentsForSite()
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [], [1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml']);
+        $this->setUpFrontendRootPage(1, [], [
+            1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml',
+        ]);
 
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());
@@ -155,5 +153,4 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         // it will create one file per language = 2 files total
         self::assertEquals(2, iterator_count($iter));
     }
-
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Netlogix\Nxerrorhandler\ErrorHandler;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\AbstractComponent;
@@ -15,7 +18,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GeneralExceptionHandler extends ProductionExceptionHandler
 {
-
     /**
      * @var array
      */
@@ -26,9 +28,6 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
      */
     protected array $components = [];
 
-    /**
-     * @inheritdoc
-     */
     public function echoExceptionWeb(Throwable $exception)
     {
         try {
@@ -37,7 +36,6 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             $effectiveStatusCode = $this->sendStatusCodes($exception);
 
             $this->logError($exception, self::CONTEXT_WEB, $effectiveStatusCode);
-
 
             $message = $this->getMessage($exception);
 
@@ -67,16 +65,17 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             $this->initialize();
         } catch (Throwable $t) {
             $this->writeLogEntries($exception, $context);
+
             return;
         }
 
         $suppressDefaultLogEntries = false;
         foreach ($this->components as $component) {
             $suppressDefaultLogEntries = $suppressDefaultLogEntries || $component->logError(
-                    $exception,
-                    $context,
-                    $statusCode
-                );
+                $exception,
+                $context,
+                $statusCode
+            );
         }
         if (!$suppressDefaultLogEntries) {
             $this->writeLogEntries($exception, $context);
@@ -90,7 +89,8 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
                 foreach (ConfigurationService::getExceptionHandlerComponents() as $componentClass) {
                     if (!class_exists($componentClass)) {
                         throw new Exception(
-                            'Error handler component ' . $componentClass . ' does not exist', 1395074867
+                            'Error handler component ' . $componentClass . ' does not exist',
+                            1395074867
                         );
                     }
                     $this->components[] = GeneralUtility::makeInstance($componentClass);
@@ -116,7 +116,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         $statusCode = 500;
         foreach ($headers as $header) {
             if (preg_match('~^HTTP/1.[01] (\d{3}) ~', $header, $matches) === 1) {
-                $statusCode = (int)$matches[1];
+                $statusCode = (int) $matches[1];
             }
         }
 
@@ -128,10 +128,6 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         return $GLOBALS['TYPO3_REQUEST'];
     }
 
-    /**
-     * @param Throwable $exception
-     * @return int
-     */
     protected function sendStatusCodes(Throwable $exception): int
     {
         $statusHeaders = $this->getStatusHeaders($exception);
@@ -149,20 +145,12 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             }
             $this->sendStatusHeaders($exception);
         }
+
         return $effectiveStatusCode;
     }
 
-    /**
-     * @param int $effectiveStatusCode
-     * @param string $message
-     * @param Throwable $exception
-     * @return string
-     */
-    protected function getErrorDocument(
-        int $effectiveStatusCode,
-        string $message,
-        Throwable $exception
-    ): string {
+    protected function getErrorDocument(int $effectiveStatusCode, string $message, Throwable $exception): string
+    {
         $request = $this->getServerRequest();
 
         $errorDocument = '';
@@ -179,6 +167,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
                 $this->getMessage($exception)
             );
         }
+
         return $errorDocument;
     }
 }

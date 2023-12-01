@@ -33,8 +33,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
     /**
      * @test
      * @dataProvider statusHeaderDataProvider
-     *
-     * @return void
      */
     public function itCanParseErrorCodeFromHeaders(array $headers, int $expected)
     {
@@ -62,14 +60,10 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itFallsBackToStatus500IfNoneIsFoundInHeaders()
     {
-        $headers = [
-            'X-Foo: Bar'
-        ];
+        $headers = ['X-Foo: Bar'];
 
         $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
 
@@ -80,8 +74,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itDoesNotAddStatusCodesIfNoComponentsAreRegistered()
     {
@@ -96,8 +88,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itGetsStatusHeadersFromComponents()
     {
@@ -110,9 +100,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
             ->getMock();
         $componentMock->expects(self::once())->method('getHttpHeaders')->with($exception)->willReturn([$expected]);
 
-        $components = [
-            $componentMock
-        ];
+        $components = [$componentMock];
         $subject->_set('components', $components);
 
         $res = $subject->_callRef('getStatusHeaders', $exception);
@@ -122,8 +110,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itMergesStatusHeadersFromMultipleComponents()
     {
@@ -148,8 +134,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function sendStatusCodesFallsBackToStatus500IfNonIsAvailable()
     {
@@ -165,8 +149,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function sendStatusCodesGetsStatusCodeFromComponents()
     {
@@ -190,8 +172,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function sendStatusCodesGetsStatusCodeFromException()
     {
@@ -211,8 +191,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function sendStatusCodesSendsHeaders()
     {
@@ -229,7 +207,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject->_set('components', []);
 
-
         $subject->_callRef('sendStatusCodes', $exception);
 
         $res = http_response_code();
@@ -239,8 +216,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itCanGetErrorDocumentFromComponent()
     {
@@ -264,8 +239,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itFallsBackToErrorDocumentFromErrorPageController()
     {
@@ -291,8 +264,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itThrowsExceptionIfNoComponentIsRegistered()
     {
@@ -308,8 +279,6 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itThrowsExceptionIfConfiguredComponentDoesnotExist()
     {
@@ -325,12 +294,12 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itLoadsComponentsFromConfiguration()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [ComponentFixture::class];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [
+            ComponentFixture::class,
+        ];
 
         $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
 

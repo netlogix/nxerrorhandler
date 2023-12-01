@@ -1,9 +1,11 @@
 <?php
 
-use Netlogix\Nxerrorhandler\Command;
+declare(strict_types=1);
+
+use Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand;
 
 return [
     'nxerrorhandler:generateErrorPages' => [
-        'class' => Command\GenerateErrorPagesCommand::class,
+        'class' => GenerateErrorPagesCommand::class,
     ],
 ];

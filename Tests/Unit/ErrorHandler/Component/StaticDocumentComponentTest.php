@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler\Component;
 
-
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -13,8 +12,6 @@ class StaticDocumentComponentTest extends UnitTestCase
 {
     /**
      * @test
-     *
-     * @return void
      */
     public function itAddsCurrentUrlToErrorDocument()
     {
@@ -23,7 +20,8 @@ class StaticDocumentComponentTest extends UnitTestCase
         $subject = $this->getMockBuilder(StaticDocumentComponent::class)
             ->onlyMethods(['getErrorDocumentFromFile'])
             ->getMock();
-        $subject->method('getErrorDocumentFromFile')->willReturn('###CURRENT_URL###');
+        $subject->method('getErrorDocumentFromFile')
+            ->willReturn('###CURRENT_URL###');
 
         $res = $subject->getOutput(0, new ServerRequest($url), '');
 
@@ -32,8 +30,6 @@ class StaticDocumentComponentTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itAddsReasonTextToErrorDocument()
     {
@@ -42,11 +38,11 @@ class StaticDocumentComponentTest extends UnitTestCase
         $subject = $this->getMockBuilder(StaticDocumentComponent::class)
             ->onlyMethods(['getErrorDocumentFromFile'])
             ->getMock();
-        $subject->method('getErrorDocumentFromFile')->willReturn('###REASON###');
+        $subject->method('getErrorDocumentFromFile')
+            ->willReturn('###REASON###');
 
         $res = $subject->getOutput(0, new ServerRequest('https://www.example.com'), $reason);
 
         self::assertEquals($reason, $res);
     }
-
 }

@@ -12,7 +12,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FatalErrorHandlerTest extends UnitTestCase
 {
-
     public function tearDown(): void
     {
         parent::tearDown();
@@ -22,8 +21,6 @@ class FatalErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itRegistersShutdownFunction()
     {
@@ -35,14 +32,11 @@ class FatalErrorHandlerTest extends UnitTestCase
         // PHP does not offer an API to access shutdown functions
         $subject->expects(self::once())->method('registerShutdownFunction');
 
-
         $subject->initialize();
     }
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itWillReserveMemory()
     {
@@ -61,8 +55,6 @@ class FatalErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itWillFreeReservedMemory()
     {
@@ -83,8 +75,6 @@ class FatalErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itWillNotCallExceptionHandlerIfNoErrorOccurred()
     {
@@ -106,8 +96,6 @@ class FatalErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itWillNotCallExceptionHandlerIfNoExceptionHandlerIsRegistered()
     {
@@ -123,7 +111,12 @@ class FatalErrorHandlerTest extends UnitTestCase
         GeneralUtility::addInstance(ExceptionHandlerFixture::class, $handlerMock);
 
         $subject->expects(self::once())->method('getLastError')->willReturn(
-            ['type' => 0, 'message' => 'foo', 'file' => '/dev/null', 'line' => 1]
+            [
+                'type' => 0,
+                'message' => 'foo',
+                'file' => '/dev/null',
+                'line' => 1,
+            ]
         );
         $subject->expects(self::once())->method('getExceptionHandlerClassName')->willReturn(null);
 
@@ -132,8 +125,6 @@ class FatalErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itWillNotCallExceptionHandlerForInvalidErrorCode()
     {
@@ -148,9 +139,13 @@ class FatalErrorHandlerTest extends UnitTestCase
         $handlerMock->expects(self::never())->method('handleException');
         GeneralUtility::addInstance(ExceptionHandlerFixture::class, $handlerMock);
 
-
         $subject->expects(self::once())->method('getLastError')->willReturn(
-            ['type' => 0, 'message' => 'foo', 'file' => '/dev/null', 'line' => 1]
+            [
+                'type' => 0,
+                'message' => 'foo',
+                'file' => '/dev/null',
+                'line' => 1,
+            ]
         );
         $subject->expects(self::once())->method('getExceptionHandlerClassName')->willReturn(
             ExceptionHandlerFixture::class
@@ -162,7 +157,6 @@ class FatalErrorHandlerTest extends UnitTestCase
     /**
      * @test
      * @dataProvider errorCodeDataProvider
-     * @return void
      */
     public function itWillCallExceptionHandlerForValidErrorCodes(int $code)
     {
@@ -172,14 +166,18 @@ class FatalErrorHandlerTest extends UnitTestCase
         $handlerMock->expects(self::once())->method('handleException');
         GeneralUtility::addInstance(ExceptionHandlerFixture::class, $handlerMock);
 
-
         $subject = $this->getMockBuilder(FatalErrorHandler::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getLastError', 'getExceptionHandlerClassName'])
             ->getMock();
 
         $subject->expects(self::once())->method('getLastError')->willReturn(
-            ['type' => $code, 'message' => 'foo', 'file' => '/dev/null', 'line' => 1]
+            [
+                'type' => $code,
+                'message' => 'foo',
+                'file' => '/dev/null',
+                'line' => 1,
+            ]
         );
         $subject->expects(self::any())->method('getExceptionHandlerClassName')->willReturn(
             ExceptionHandlerFixture::class
@@ -190,8 +188,6 @@ class FatalErrorHandlerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itCanGetRegisteredExceptionHandlerClassName()
     {
@@ -222,4 +218,3 @@ class FatalErrorHandlerTest extends UnitTestCase
         ];
     }
 }
-

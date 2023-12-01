@@ -17,16 +17,12 @@ class StaticDocumentComponentTest extends FunctionalTestCase
 
     protected $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
-            'nxerrorhandler' => [
-
-            ],
-        ]
+            'nxerrorhandler' => [],
+        ],
     ];
 
     /**
      * @test
-     *
-     * @return void
      */
     public function itTriesToFetchContentForLanguageCombinations()
     {
@@ -41,18 +37,21 @@ class StaticDocumentComponentTest extends FunctionalTestCase
         $subject->expects(self::at(0))->method('getContentFromPath')->willReturnCallback(
             function (string $errorDocumentFileName) use ($errorCode): ?string {
                 self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName);
+
                 return null;
             }
         );
         $subject->expects(self::at(1))->method('getContentFromPath')->willReturnCallback(
             function (string $errorDocumentFileName) use ($errorCode): ?string {
                 self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName);
+
                 return null;
             }
         );
         $subject->expects(self::at(2))->method('getContentFromPath')->willReturnCallback(
             function (string $errorDocumentFileName) use ($errorCode): ?string {
                 self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName);
+
                 return null;
             }
         );
@@ -65,6 +64,8 @@ class StaticDocumentComponentTest extends FunctionalTestCase
         parent::setUp();
 
         $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [], [1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml']);
+        $this->setUpFrontendRootPage(1, [], [
+            1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml',
+        ]);
     }
 }

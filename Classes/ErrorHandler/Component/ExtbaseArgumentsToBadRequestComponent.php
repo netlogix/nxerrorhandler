@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Netlogix\Nxerrorhandler\ErrorHandler\Component;
 
+use Throwable;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Exception\RequiredArgumentMissingException;
 use TYPO3\CMS\Extbase\Property\Exception as PropertyException;
@@ -13,16 +16,14 @@ use TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException;
  */
 class ExtbaseArgumentsToBadRequestComponent extends AbstractComponent
 {
-
-    public function getHttpHeaders(\Throwable $exception): array
+    public function getHttpHeaders(Throwable $exception): array
     {
         if ($exception instanceof TargetNotFoundException) {
             return [HttpUtility::HTTP_STATUS_404];
         } elseif ($exception instanceof PropertyException || $exception instanceof RequiredArgumentMissingException) {
             return [HttpUtility::HTTP_STATUS_400];
-        }  else {
+        } else {
             return [];
         }
     }
-
 }

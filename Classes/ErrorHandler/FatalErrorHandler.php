@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Netlogix\Nxerrorhandler\ErrorHandler;
 
 use ErrorException;
@@ -11,7 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FatalErrorHandler implements SingletonInterface
 {
-
     /**
      * Reserved memory to be freed when handling a fatal error. Necessary to have some memory in case of memory limit
      * errors.
@@ -47,7 +49,7 @@ class FatalErrorHandler implements SingletonInterface
             return;
         }
 
-        if ($this->getExceptionHandlerClassName() == null) {
+        if ($this->getExceptionHandlerClassName() === null) {
             return;
         }
 
@@ -69,8 +71,6 @@ class FatalErrorHandler implements SingletonInterface
 
     /**
      * Wrapper for better testability
-     *
-     * @return array|null
      */
     protected function getLastError(): ?array
     {
@@ -89,5 +89,4 @@ class FatalErrorHandler implements SingletonInterface
     {
         register_shutdown_function([$this, 'handleFatalError']);
     }
-
 }

@@ -9,10 +9,8 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 class ConfigurationServiceTest extends UnitTestCase
 {
-
     /**
      * @test
-     * @return void
      */
     public function itCanGetErrorDocumentDirectory()
     {
@@ -21,7 +19,6 @@ class ConfigurationServiceTest extends UnitTestCase
 
     /**
      * @test
-     * @return void
      */
     public function itCanGetErrorDocumentFilePath()
     {

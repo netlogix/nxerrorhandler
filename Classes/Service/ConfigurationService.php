@@ -1,29 +1,25 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Service;
 
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConfigurationService
 {
+    public const MESSAGE_BLACKLIST_REGEX = 'messageBlacklistRegex';
 
-    const MESSAGE_BLACKLIST_REGEX = 'messageBlacklistRegex';
+    public const REPORT_DATABASE_CONNECTION_ERRORS = 'reportDatabaseConnectionErrors';
 
-    const REPORT_DATABASE_CONNECTION_ERRORS = 'reportDatabaseConnectionErrors';
+    public const EXCEPTION_HANDLER_COMPONENTS = 'exceptionHandlerComponents';
 
-    const EXCEPTION_HANDLER_COMPONENTS = 'exceptionHandlerComponents';
-
-    const TARGET_DIRECTORY = '/tx_nxerrorhandler/';
+    public const TARGET_DIRECTORY = '/tx_nxerrorhandler/';
 
     /**
-     * @param $path
      * @return mixed
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     * @throws ExtensionConfigurationPathDoesNotExistException
      */
     protected static function getExtensionConfiguration(string $path)
     {
@@ -37,13 +33,14 @@ class ConfigurationService
 
     public static function reportDatabaseConnectionErrors(): bool
     {
-        return (bool)self::getExtensionConfiguration(self::REPORT_DATABASE_CONNECTION_ERRORS);
+        return (bool) self::getExtensionConfiguration(self::REPORT_DATABASE_CONNECTION_ERRORS);
     }
 
     public static function getExceptionHandlerComponents(): array
     {
         $components = self::getExtensionConfiguration(self::EXCEPTION_HANDLER_COMPONENTS);
-        return !empty($components) ? (array)$components : [];
+
+        return !empty($components) ? (array) $components : [];
     }
 
     public static function getErrorDocumentDirectory(): string
@@ -55,5 +52,4 @@ class ConfigurationService
     {
         return ConfigurationService::getErrorDocumentDirectory() . '%s/%s-%s-%s.html';
     }
-
 }

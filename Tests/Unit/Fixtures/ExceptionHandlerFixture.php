@@ -9,7 +9,6 @@ use TYPO3\CMS\Core\Error\ExceptionHandlerInterface;
 
 class ExceptionHandlerFixture implements ExceptionHandlerInterface
 {
-
     public function __construct()
     {
     }

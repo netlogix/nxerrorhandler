@@ -16,8 +16,6 @@ class PageNotFoundHandlerTest extends UnitTestCase
 {
     /**
      * @test
-     *
-     * @return void
      */
     public function isUsesContentFromStaticDocumentComponent()
     {
@@ -31,15 +29,15 @@ class PageNotFoundHandlerTest extends UnitTestCase
         GeneralUtility::addInstance(StaticDocumentComponent::class, $mockComponent);
 
         $subject = new PageNotFoundHandler();
-        $res = $subject->handlePageNotFound(['reasonText' => 'foo'], new ErrorController());
+        $res = $subject->handlePageNotFound([
+            'reasonText' => 'foo',
+        ], new ErrorController());
 
         self::assertEquals($expectedContent, $res);
     }
 
     /**
      * @test
-     *
-     * @return void
      */
     public function isWillFallBackToErrorPageIfDtaticComponentHasNoContent()
     {
@@ -52,7 +50,6 @@ class PageNotFoundHandlerTest extends UnitTestCase
         $mockComponent->expects(self::once())->method('getOutput')->willReturn('');
         GeneralUtility::addInstance(StaticDocumentComponent::class, $mockComponent);
 
-
         $mockErrorPage = $this->getMockBuilder(ErrorPageController::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['errorAction'])
@@ -61,7 +58,9 @@ class PageNotFoundHandlerTest extends UnitTestCase
         GeneralUtility::addInstance(ErrorPageController::class, $mockErrorPage);
 
         $subject = new PageNotFoundHandler();
-        $res = $subject->handlePageNotFound(['reasonText' => 'foo'], new ErrorController());
+        $res = $subject->handlePageNotFound([
+            'reasonText' => 'foo',
+        ], new ErrorController());
 
         self::assertEquals($expectedContent, $res);
     }
