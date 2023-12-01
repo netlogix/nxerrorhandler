@@ -21,6 +21,13 @@ class GeneralExceptionHandlerTest extends FunctionalTestCase
         ],
     ];
 
+    protected function tearDown(): void
+    {
+        restore_exception_handler();
+
+        parent::tearDown();
+    }
+
     /**
      * @test
      */

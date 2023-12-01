@@ -25,9 +25,10 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         unset($GLOBALS['TYPO3_REQUEST']);
+        restore_exception_handler();
+
+        parent::tearDown();
     }
 
     /**
