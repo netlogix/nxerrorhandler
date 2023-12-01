@@ -32,7 +32,7 @@
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "nxerrorhandler",
-			"web-dir": ".Build/Web",
+			"web-dir": ".Build/public",
 			"cms-package-dir": "{$vendor-dir}/typo3/cms"
 		}
 	},
