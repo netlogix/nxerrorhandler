@@ -68,7 +68,11 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->callInaccessibleMethod($subject, 'initialize', new StringInput(''), new NullOutput());
+        $reflectionObject = new \ReflectionObject($subject);
+        $reflectionMethod = $reflectionObject->getMethod('initialize');
+        $reflectionMethod->setAccessible(true);
+
+        $reflectionMethod->invokeArgs($subject, [new StringInput(''), new NullOutput()]);
 
         self::assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
     }
@@ -84,7 +88,11 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->callInaccessibleMethod($subject, 'initialize', new StringInput(''), new NullOutput());
+        $reflectionObject = new \ReflectionObject($subject);
+        $reflectionMethod = $reflectionObject->getMethod('initialize');
+        $reflectionMethod->setAccessible(true);
+
+        $reflectionMethod->invokeArgs($subject, [new StringInput(''), new NullOutput()]);
 
         self::assertFileExists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
     }
