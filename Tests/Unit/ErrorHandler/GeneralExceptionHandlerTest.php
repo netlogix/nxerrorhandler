@@ -38,7 +38,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
     {
         $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
-        $res = $subject->_callRef('parseStatusHeadersForCode', $headers);
+        $res = $subject->_call('parseStatusHeadersForCode', $headers);
 
         self::assertEquals($expected, $res);
     }
@@ -67,7 +67,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
-        $res = $subject->_callRef('parseStatusHeadersForCode', $headers);
+        $res = $subject->_call('parseStatusHeadersForCode', $headers);
 
         self::assertEquals(500, $res);
     }
@@ -81,7 +81,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
         $subject->_set('components', []);
         $exception = new Exception(uniqid(), time());
 
-        $res = $subject->_callRef('getStatusHeaders', $exception);
+        $res = $subject->_call('getStatusHeaders', $exception);
 
         self::assertEmpty($res);
     }
@@ -103,7 +103,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
         $components = [$componentMock];
         $subject->_set('components', $components);
 
-        $res = $subject->_callRef('getStatusHeaders', $exception);
+        $res = $subject->_call('getStatusHeaders', $exception);
 
         self::assertEquals($res, [$expected]);
     }
@@ -127,7 +127,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject->_set('components', $components);
 
-        $res = $subject->_callRef('getStatusHeaders', $exception);
+        $res = $subject->_call('getStatusHeaders', $exception);
 
         self::assertEquals($res, $codes);
     }
@@ -142,7 +142,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject->_set('components', []);
 
-        $res = $subject->_callRef('sendStatusCodes', $exception);
+        $res = $subject->_call('sendStatusCodes', $exception);
 
         self::assertEquals(500, $res);
     }
@@ -165,7 +165,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject->_set('components', [$componentMock]);
 
-        $res = $subject->_callRef('sendStatusCodes', $exception);
+        $res = $subject->_call('sendStatusCodes', $exception);
 
         self::assertEquals($code, $res);
     }
@@ -184,7 +184,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject->_set('components', []);
 
-        $res = $subject->_callRef('sendStatusCodes', $exception);
+        $res = $subject->_call('sendStatusCodes', $exception);
 
         self::assertEquals($code, $res);
     }
@@ -207,7 +207,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $subject->_set('components', []);
 
-        $subject->_callRef('sendStatusCodes', $exception);
+        $subject->_call('sendStatusCodes', $exception);
 
         $res = http_response_code();
 
