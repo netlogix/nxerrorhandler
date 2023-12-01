@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Functional\ErrorHandler\Component;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -13,9 +13,9 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 
 class StaticDocumentComponentTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
             'nxerrorhandler' => [],
         ],

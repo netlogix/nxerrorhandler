@@ -6,7 +6,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
 use Netlogix\Nxerrorhandler\ErrorHandler\PageNotFoundHandler;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Controller\ErrorPageController;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

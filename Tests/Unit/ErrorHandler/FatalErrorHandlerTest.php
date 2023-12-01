@@ -6,7 +6,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\FatalErrorHandler;
 use Netlogix\Nxerrorhandler\Tests\Unit\Fixtures\ExceptionHandlerFixture;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use ReflectionClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -205,7 +205,7 @@ class FatalErrorHandlerTest extends UnitTestCase
         self::assertEquals($expected, $res);
     }
 
-    public function errorCodeDataProvider(): array
+    public static function errorCodeDataProvider(): array
     {
         return [
             'Fatal run-time errors' => [E_ERROR],

@@ -6,13 +6,13 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\Service;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ConfigurationServiceTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
             'nxerrorhandler' => [
                 'reportDatabaseConnectionErrors' => true,

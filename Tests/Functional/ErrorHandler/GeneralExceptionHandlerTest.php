@@ -6,16 +6,16 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\ErrorHandler;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler;
 use Netlogix\Nxerrorhandler\Tests\Unit\Fixtures\ComponentFixture;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GeneralExceptionHandlerTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
             'nxerrorhandler' => [],
         ],

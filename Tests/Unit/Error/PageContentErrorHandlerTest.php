@@ -6,12 +6,12 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class PageContentErrorHandlerTest extends UnitTestCase
 {

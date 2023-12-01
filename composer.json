@@ -49,6 +49,8 @@
 		"rector-fix": "rector process",
 		"lint": "ecs check",
 		"lint-fix": "ecs check --fix",
+		"test-unit": "phpunit -c phpunit.xml",
+		"test-functional": "phpunit -c phpunit_functional.xml",
 		"post-autoload-dump": [
 			"@prepare-extension-test-structure",
 			"mkdir -p .Build/logs/"

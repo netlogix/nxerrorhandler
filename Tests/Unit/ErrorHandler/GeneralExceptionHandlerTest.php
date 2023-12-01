@@ -7,7 +7,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler;
 use Exception;
 use Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler;
 use Netlogix\Nxerrorhandler\Tests\Unit\Fixtures\ComponentFixture;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Controller\ErrorPageController;
 use TYPO3\CMS\Core\Error\Http\StatusException;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -36,14 +36,14 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function itCanParseErrorCodeFromHeaders(array $headers, int $expected)
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $res = $subject->_callRef('parseStatusHeadersForCode', $headers);
 
         self::assertEquals($expected, $res);
     }
 
-    public function statusHeaderDataProvider(): array
+    public static function statusHeaderDataProvider(): array
     {
         $data = [];
         // this is a selection of relevant codes
@@ -65,7 +65,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
     {
         $headers = ['X-Foo: Bar'];
 
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $res = $subject->_callRef('parseStatusHeadersForCode', $headers);
 
@@ -77,7 +77,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function itDoesNotAddStatusCodesIfNoComponentsAreRegistered()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $subject->_set('components', []);
         $exception = new Exception(uniqid(), time());
 
@@ -91,7 +91,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function itGetsStatusHeadersFromComponents()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $exception = new Exception(uniqid(), time());
         $expected = rand(100, 599);
 
@@ -113,7 +113,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function itMergesStatusHeadersFromMultipleComponents()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $exception = new Exception(uniqid(), time());
 
         $codes = [rand(100, 599), rand(100, 599)];
@@ -137,7 +137,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function sendStatusCodesFallsBackToStatus500IfNonIsAvailable()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $exception = new Exception(uniqid(), time());
 
         $subject->_set('components', []);
@@ -152,7 +152,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function sendStatusCodesGetsStatusCodeFromComponents()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $exception = new Exception(uniqid(), time());
 
         $code = 418;
@@ -175,7 +175,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function sendStatusCodesGetsStatusCodeFromException()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $code = 418;
         $headerLine = HttpUtility::HTTP_STATUS_418;
@@ -198,7 +198,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
             'Testing response codes needs enabled "processIsolation". This slows down tests immensely.'
         );
 
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $code = 418;
         $headerLine = HttpUtility::HTTP_STATUS_418;
@@ -219,7 +219,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function itCanGetErrorDocumentFromComponent()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $exception = new Exception(uniqid(), time());
 
         $content = uniqid('content_');
@@ -242,7 +242,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
      */
     public function itFallsBackToErrorDocumentFromErrorPageController()
     {
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
         $exception = new Exception(uniqid(), time());
 
         $content = uniqid('content_');
@@ -272,7 +272,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = [];
 
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $subject->_call('initialize');
     }
@@ -287,7 +287,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['nxerrorhandler']['exceptionHandlerComponents'] = ['NotAClass'];
 
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $subject->_call('initialize');
     }
@@ -301,7 +301,7 @@ class GeneralExceptionHandlerTest extends UnitTestCase
             ComponentFixture::class,
         ];
 
-        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, ['dummy']);
+        $subject = $this->getAccessibleMock(GeneralExceptionHandler::class, null);
 
         $subject->_call('initialize');
 

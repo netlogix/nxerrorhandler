@@ -7,7 +7,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\Command;
 use FilesystemIterator;
 use Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
@@ -16,9 +16,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'SYS' => [
             'caching' => [
                 'cacheConfigurations' => [

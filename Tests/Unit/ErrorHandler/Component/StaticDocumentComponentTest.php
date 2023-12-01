@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler\Component;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Http\ServerRequest;
 
 class StaticDocumentComponentTest extends UnitTestCase

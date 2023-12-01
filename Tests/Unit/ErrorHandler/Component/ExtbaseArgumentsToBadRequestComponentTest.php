@@ -6,7 +6,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler\Component;
 
 use Exception;
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Exception\RequiredArgumentMissingException;
 use TYPO3\CMS\Extbase\Property\Exception as PropertyException;
@@ -38,7 +38,7 @@ class ExtbaseArgumentsToBadRequestComponentTest extends UnitTestCase
         self::assertCount(0, $res);
     }
 
-    public function exceptionHeaderStatusDataProvider(): array
+    public static function exceptionHeaderStatusDataProvider(): array
     {
         return [
             TargetNotFoundException::class => [new TargetNotFoundException(), HttpUtility::HTTP_STATUS_404],

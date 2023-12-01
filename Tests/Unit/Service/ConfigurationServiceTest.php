@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Unit\Service;
 
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ConfigurationServiceTest extends UnitTestCase
 {
