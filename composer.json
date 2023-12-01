@@ -11,8 +11,10 @@
 	},
 	"require-dev": {
 		"ext-sqlite3": "*",
+		"ssch/typo3-rector": "^1.5",
 		"typo3/testing-framework": "^8.0",
-		"phpunit/phpcov": "^9.0"
+		"phpunit/phpcov": "^9.0",
+		"netlogix/coding-guidelines-php": "^1.0"
 	},
 	"suggest": {
 		"netlogix/nxsentry": "Send errors and exceptions to sentry"
@@ -43,6 +45,10 @@
 		}
 	},
 	"scripts": {
+		"rector": "rector process --dry-run",
+		"rector-fix": "rector process",
+		"lint": "ecs check",
+		"lint-fix": "ecs check --fix",
 		"post-autoload-dump": [
 			"@prepare-extension-test-structure",
 			"mkdir -p .Build/logs/"
