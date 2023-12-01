@@ -25,9 +25,6 @@ return [
             ],
         ]
     ],
-    'FE' => [
-        'pageNotFound_handling' => 'USER_FUNCTION:' . \Netlogix\Nxerrorhandler\ErrorHandler\PageNotFoundHandler::class . '->handlePageNotFound'
-    ],
     'SYS' => [
         'productionExceptionHandler' => \Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler::class
     ],
