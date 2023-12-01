@@ -11,12 +11,15 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+
+    protected array $pathsToLinkInTestInstance = [
+        'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites/' => 'typo3conf/sites',
+    ];
 
     protected array $configurationToUseInTestInstance = [
         'SYS' => [
@@ -42,11 +45,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         if (is_dir(ConfigurationService::getErrorDocumentDirectory())) {
             GeneralUtility::rmdir(ConfigurationService::getErrorDocumentDirectory(), true);
-        }
-
-        // delete all created sites
-        if (is_dir(Environment::getConfigPath() . '/sites')) {
-            GeneralUtility::rmdir(Environment::getConfigPath() . '/sites', true);
         }
     }
 
@@ -122,7 +120,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
         $this->setUpFrontendRootPage(1);
 
         $subject = new GenerateErrorPagesCommand();
@@ -143,10 +141,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [], [
-            1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml',
-        ]);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
+        $this->setUpFrontendRootPage(1);
 
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());

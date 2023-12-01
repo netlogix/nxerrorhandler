@@ -15,6 +15,10 @@ class StaticDocumentComponentTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
+    protected array $pathsToLinkInTestInstance = [
+        'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites/' => 'typo3conf/sites',
+    ];
+
     protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
             'nxerrorhandler' => [],
@@ -63,9 +67,7 @@ class StaticDocumentComponentTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [], [
-            1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml',
-        ]);
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/pages.csv');
+        $this->setUpFrontendRootPage(1);
     }
 }
