@@ -15,28 +15,10 @@ class ConfigurationServiceTest extends FunctionalTestCase
     protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
             'nxerrorhandler' => [
-                'reportDatabaseConnectionErrors' => true,
-                'messageBlacklistRegex' => '.*',
                 'exceptionHandlerComponents' => [ExtbaseArgumentsToBadRequestComponent::class],
             ],
         ],
     ];
-
-    /**
-     * @test
-     */
-    public function itCanGetMessageBlacklistRegex()
-    {
-        self::assertEquals(ConfigurationService::getMessageBlacklistRegex(), '.*');
-    }
-
-    /**
-     * @test
-     */
-    public function itCanGetReportDatabaseConnectionErrors()
-    {
-        self::assertTrue(ConfigurationService::reportDatabaseConnectionErrors());
-    }
 
     /**
      * @test

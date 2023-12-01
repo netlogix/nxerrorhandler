@@ -10,10 +10,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConfigurationService
 {
-    public const MESSAGE_BLACKLIST_REGEX = 'messageBlacklistRegex';
-
-    public const REPORT_DATABASE_CONNECTION_ERRORS = 'reportDatabaseConnectionErrors';
-
     public const EXCEPTION_HANDLER_COMPONENTS = 'exceptionHandlerComponents';
 
     public const TARGET_DIRECTORY = '/tx_nxerrorhandler/';
@@ -24,16 +20,6 @@ class ConfigurationService
     protected static function getExtensionConfiguration(string $path)
     {
         return GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('nxerrorhandler', $path);
-    }
-
-    public static function getMessageBlacklistRegex(): ?string
-    {
-        return self::getExtensionConfiguration(self::MESSAGE_BLACKLIST_REGEX);
-    }
-
-    public static function reportDatabaseConnectionErrors(): bool
-    {
-        return (bool) self::getExtensionConfiguration(self::REPORT_DATABASE_CONNECTION_ERRORS);
     }
 
     public static function getExceptionHandlerComponents(): array
