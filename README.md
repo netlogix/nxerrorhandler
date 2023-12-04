@@ -5,8 +5,7 @@
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)](https://php.net/)
 [![GitHub CI status](https://github.com/netlogix/nxerrorhandler/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/netlogix/nxerrorhandler/actions)
 
-Improves error handling in TYPO3. Can send exceptions by mail and uses
-statically rendered error documents for output to reduce strain on the server.
+Improves error handling in TYPO3 by using statically rendered error documents for output to reduce strain on the server.
 
 This extension is a work in progress.
 
