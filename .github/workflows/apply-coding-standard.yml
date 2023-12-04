@@ -44,7 +44,7 @@ jobs:
         run: composer lint-fix
 
       - name: 'Create pull-request'
-        uses: peter-evans/create-pull-request@v5.0.0
+        uses: peter-evans/create-pull-request@v5.0.2
         with:
           token: ${{ secrets.GH_AUTOMATION_TOKEN }}
           commit-message: "[automated] Apply Coding Standard"
