@@ -64,7 +64,7 @@ jobs:
 
       # finally use the cobertura report and generate coverage summary
       - name: 'Code Coverage Summary Report'
-        uses: irongut/CodeCoverageSummary@v1.2.0
+        uses: irongut/CodeCoverageSummary@v1.3.0
         with:
           filename: .Build/logs/cobertura.xml
           badge: true
