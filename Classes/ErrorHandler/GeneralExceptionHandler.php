@@ -165,7 +165,9 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         }
 
         if ($errorDocument === '') {
-            return GeneralUtility::makeInstance(ErrorPageController::class)->errorAction(
+            /** @var ErrorPageController $errorPageController */
+            $errorPageController = GeneralUtility::makeInstance(ErrorPageController::class);
+            return $errorPageController->errorAction(
                 $this->getTitle($exception),
                 $this->getMessage($exception)
             );

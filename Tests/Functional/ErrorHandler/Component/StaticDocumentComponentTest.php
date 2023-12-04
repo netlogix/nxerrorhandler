@@ -14,11 +14,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class StaticDocumentComponentTest extends FunctionalTestCase
 {
-    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $pathsToLinkInTestInstance = ['typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites'];
 
-    protected array $pathsToLinkInTestInstance = [
-        'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites/' => 'typo3conf/sites',
-    ];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
     protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
@@ -31,31 +29,26 @@ class StaticDocumentComponentTest extends FunctionalTestCase
     {
         $errorCode = 400;
         $request = new ServerRequest('/de/', 'GET');
+
         $request = $request->withAttribute('site', (new SiteFinder())->getSiteByPageId(1));
         $request = $request->withAttribute('language', new SiteLanguage(1, 'de_DE.UTF-8', new Uri('/de/'), []));
 
-        $subject = $this->createMock(StaticDocumentComponent::class);
-        $subject->expects(self::at(0))->method('getContentFromPath')->willReturnCallback(
-            static function (string $errorDocumentFileName) use ($errorCode): ?string {
-                self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName);
+        $subject = $this->getAccessibleMock(StaticDocumentComponent::class, ['getContentFromPath']);
 
-                return null;
-            }
-        );
-        $subject->expects(self::at(1))->method('getContentFromPath')->willReturnCallback(
-            static function (string $errorDocumentFileName) use ($errorCode): ?string {
-                self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName);
+        $matcher = self::exactly(3);
 
-                return null;
-            }
-        );
-        $subject->expects(self::at(2))->method('getContentFromPath')->willReturnCallback(
-            static function (string $errorDocumentFileName) use ($errorCode): ?string {
-                self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName);
+        $subject
+            ->expects($matcher)
+            ->method('getContentFromPath')->willReturnCallback(
+                static function (string $errorDocumentFileName) use ($errorCode, $matcher): ?string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName),
+                        2, 3 => self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName),
+                    };
 
-                return null;
-            }
-        );
+                    return null;
+                }
+            );
 
         $subject->getOutput($errorCode, $request);
     }

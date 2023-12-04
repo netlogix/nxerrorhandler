@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -190,8 +191,13 @@ class GenerateErrorPagesCommand extends Command
             return $urlParams['url'];
         }
 
-        // Get the site related to the configured error page
-        $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int) $urlParams['pageuid']);
+        try {
+            // Get the site related to the configured error page
+            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int) $urlParams['pageuid']);
+        } catch (SiteNotFoundException) {
+            // Fall back to current request for the site
+            $site = $request->getAttribute('site', null);
+        }
 
         /** @var SiteLanguage $requestLanguage */
         $requestLanguage = $request->getAttribute('language', null);

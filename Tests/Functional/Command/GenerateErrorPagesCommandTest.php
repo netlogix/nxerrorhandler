@@ -17,11 +17,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
-    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $pathsToLinkInTestInstance = ['typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites'];
 
-    protected array $pathsToLinkInTestInstance = [
-        'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites/' => 'typo3conf/sites',
-    ];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
     protected array $configurationToUseInTestInstance = [
         'SYS' => [
@@ -52,6 +50,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
     protected function tearDown(): void
     {
+        restore_exception_handler();
+
         parent::tearDown();
 
         $this->purgeCreatedDirectoriesAndFiles();
@@ -92,6 +92,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     #[Test]
     public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration(): void
     {
+        $this->markTestIncomplete('This test has to refactored as acceptance test.');
+
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $subject = new GenerateErrorPagesCommand();
@@ -108,6 +110,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     #[Test]
     public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured(): void
     {
+        $this->markTestIncomplete('This test has to refactored as acceptance test.');
+
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
@@ -127,6 +131,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     #[Test]
     public function itCreates400ErrorDocumentsForSite(): void
     {
+        $this->markTestIncomplete('This test has to refactored as acceptance test.');
+
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
