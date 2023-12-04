@@ -5,25 +5,19 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Unit\Service;
 
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ConfigurationServiceTest extends UnitTestCase
 {
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itCanGetErrorDocumentDirectory()
+    #[Test]
+    public function itCanGetErrorDocumentDirectory(): void
     {
         self::assertNotEmpty(ConfigurationService::getErrorDocumentDirectory());
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itCanGetErrorDocumentFilePath()
+    #[Test]
+    public function itCanGetErrorDocumentFilePath(): void
     {
         self::assertNotEmpty(ConfigurationService::getErrorDocumentFilePath());
     }

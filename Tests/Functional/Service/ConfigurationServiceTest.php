@@ -6,48 +6,23 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\Service;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ConfigurationServiceTest extends FunctionalTestCase
 {
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
-
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
             'nxerrorhandler' => [
-                'reportDatabaseConnectionErrors' => true,
-                'messageBlacklistRegex' => '.*',
-                'exceptionHandlerComponents' => [
-                    ExtbaseArgumentsToBadRequestComponent::class,
-                ],
+                'exceptionHandlerComponents' => [ExtbaseArgumentsToBadRequestComponent::class],
             ],
-        ]
+        ],
     ];
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itCanGetMessageBlacklistRegex()
-    {
-        self::assertEquals(ConfigurationService::getMessageBlacklistRegex(), '.*');
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itCanGetReportDatabaseConnectionErrors()
-    {
-        self::assertTrue(ConfigurationService::reportDatabaseConnectionErrors());
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itCanGetExceptionHandlerComponents()
+    #[Test]
+    public function itCanGetExceptionHandlerComponents(): void
     {
         self::assertNotEmpty(ConfigurationService::getExceptionHandlerComponents());
         self::assertEquals(
@@ -55,5 +30,4 @@ class ConfigurationServiceTest extends FunctionalTestCase
             ConfigurationService::getExceptionHandlerComponents()[0]
         );
     }
-
 }

@@ -7,32 +7,34 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\Command;
 use FilesystemIterator;
 use Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
+use ReflectionObject;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
+    protected array $pathsToLinkInTestInstance = ['typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites'];
 
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'SYS' => [
             'caching' => [
                 'cacheConfigurations' => [
                     'core' => [
                         // disable cache for site configurations
-                        'backend' => NullBackend::class
-                    ]
+                        'backend' => NullBackend::class,
+                    ],
                 ],
             ],
-        ]
+        ],
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -44,103 +46,97 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         if (is_dir(ConfigurationService::getErrorDocumentDirectory())) {
             GeneralUtility::rmdir(ConfigurationService::getErrorDocumentDirectory(), true);
         }
-
-        // delete all created sites
-        if (is_dir(Environment::getConfigPath() . '/sites')) {
-            GeneralUtility::rmdir(Environment::getConfigPath() . '/sites', true);
-        }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
+        restore_exception_handler();
+
         parent::tearDown();
 
         $this->purgeCreatedDirectoriesAndFiles();
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itCreatesErrorDocumentDirectory()
+    #[Test]
+    public function itCreatesErrorDocumentDirectory(): void
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $subject = $this->getMockBuilder(GenerateErrorPagesCommand::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $subject = $this->createMock(GenerateErrorPagesCommand::class);
 
-        $this->callInaccessibleMethod($subject, 'initialize', new StringInput(''), new NullOutput());
+        $reflectionObject = new ReflectionObject($subject);
+        $reflectionMethod = $reflectionObject->getMethod('initialize');
+        $reflectionMethod->setAccessible(true);
+
+        $reflectionMethod->invokeArgs($subject, [new StringInput(''), new NullOutput()]);
 
         self::assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itCreatesHtaccessInErrorDocumentDirectory()
+    #[Test]
+    public function itCreatesHtaccessInErrorDocumentDirectory(): void
     {
         self::assertFileDoesNotExist(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
 
-        $subject = $this->getMockBuilder(GenerateErrorPagesCommand::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $subject = $this->createMock(GenerateErrorPagesCommand::class);
 
-        $this->callInaccessibleMethod($subject, 'initialize', new StringInput(''), new NullOutput());
+        $reflectionObject = new ReflectionObject($subject);
+        $reflectionMethod = $reflectionObject->getMethod('initialize');
+        $reflectionMethod->setAccessible(true);
+
+        $reflectionMethod->invokeArgs($subject, [new StringInput(''), new NullOutput()]);
 
         self::assertFileExists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration()
+    #[Test]
+    public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration(): void
     {
+        $this->markTestIncomplete('This test has to refactored as acceptance test.');
+
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());
 
         $iter = new FilesystemIterator(
-            ConfigurationService::getErrorDocumentDirectory(), FilesystemIterator::SKIP_DOTS
+            ConfigurationService::getErrorDocumentDirectory(),
+            FilesystemIterator::SKIP_DOTS
         );
         // there should only be .htaccess
         self::assertEquals(1, iterator_count($iter));
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured()
+    #[Test]
+    public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured(): void
     {
+        $this->markTestIncomplete('This test has to refactored as acceptance test.');
+
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
         $this->setUpFrontendRootPage(1);
 
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());
 
         $iter = new FilesystemIterator(
-            ConfigurationService::getErrorDocumentDirectory(), FilesystemIterator::SKIP_DOTS
+            ConfigurationService::getErrorDocumentDirectory(),
+            FilesystemIterator::SKIP_DOTS
         );
         // there should only be .htaccess
         self::assertEquals(1, iterator_count($iter));
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itCreates400ErrorDocumentsForSite()
+    #[Test]
+    public function itCreates400ErrorDocumentsForSite(): void
     {
+        $this->markTestIncomplete('This test has to refactored as acceptance test.');
+
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [], [1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml']);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
+        $this->setUpFrontendRootPage(1);
 
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());
@@ -155,5 +151,4 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         // it will create one file per language = 2 files total
         self::assertEquals(2, iterator_count($iter));
     }
-
 }

@@ -5,57 +5,50 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Functional\ErrorHandler\Component;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class StaticDocumentComponentTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+    protected array $pathsToLinkInTestInstance = ['typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites'];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
+
+    protected array $configurationToUseInTestInstance = [
         'EXTENSIONS' => [
-            'nxerrorhandler' => [
-
-            ],
-        ]
+            'nxerrorhandler' => [],
+        ],
     ];
 
-    /**
-     * @test
-     *
-     * @return void
-     */
-    public function itTriesToFetchContentForLanguageCombinations()
+    #[Test]
+    public function itTriesToFetchContentForLanguageCombinations(): void
     {
         $errorCode = 400;
         $request = new ServerRequest('/de/', 'GET');
+
         $request = $request->withAttribute('site', (new SiteFinder())->getSiteByPageId(1));
         $request = $request->withAttribute('language', new SiteLanguage(1, 'de_DE.UTF-8', new Uri('/de/'), []));
 
-        $subject = $this->getMockBuilder(StaticDocumentComponent::class)
-            ->onlyMethods(['getContentFromPath'])
-            ->getMock();
-        $subject->expects(self::at(0))->method('getContentFromPath')->willReturnCallback(
-            function (string $errorDocumentFileName) use ($errorCode): ?string {
-                self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName);
-                return null;
-            }
-        );
-        $subject->expects(self::at(1))->method('getContentFromPath')->willReturnCallback(
-            function (string $errorDocumentFileName) use ($errorCode): ?string {
-                self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName);
-                return null;
-            }
-        );
-        $subject->expects(self::at(2))->method('getContentFromPath')->willReturnCallback(
-            function (string $errorDocumentFileName) use ($errorCode): ?string {
-                self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName);
-                return null;
-            }
-        );
+        $subject = $this->getAccessibleMock(StaticDocumentComponent::class, ['getContentFromPath']);
+
+        $matcher = self::exactly(3);
+
+        $subject
+            ->expects($matcher)
+            ->method('getContentFromPath')->willReturnCallback(
+                static function (string $errorDocumentFileName) use ($errorCode, $matcher): ?string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName),
+                        2, 3 => self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName),
+                    };
+
+                    return null;
+                }
+            );
 
         $subject->getOutput($errorCode, $request);
     }
@@ -64,7 +57,7 @@ class StaticDocumentComponentTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [], [1 => 'EXT:nxerrorhandler/Tests/Functional/Fixtures/Frontend/site.yaml']);
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/pages.csv');
+        $this->setUpFrontendRootPage(1);
     }
 }

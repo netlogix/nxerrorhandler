@@ -6,26 +6,20 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class PageContentErrorHandlerTest extends UnitTestCase
 {
+    private MockObject&PageContentErrorHandler $subject;
 
-    /**
-     * @var PageContentErrorHandler|MockObject
-     */
-    private $subject;
-
-    /**
-     * @test
-     * @return void
-     */
-    public function itReturnsJsonResponseForJsonRequest()
+    #[Test]
+    public function itReturnsJsonResponseForJsonRequest(): void
     {
         $req = new ServerRequest();
         $req = $req->withHeader('Accept', 'application/json');
@@ -35,11 +29,8 @@ class PageContentErrorHandlerTest extends UnitTestCase
         self::assertInstanceOf(JsonResponse::class, $res);
     }
 
-    /**
-     * @test
-     * @return void
-     */
-    public function itReturnsJsonResponseForJsonApiRequest()
+    #[Test]
+    public function itReturnsJsonResponseForJsonApiRequest(): void
     {
         $req = new ServerRequest();
         $req = $req->withHeader('Accept', 'application/vnd.api+json');
@@ -49,18 +40,10 @@ class PageContentErrorHandlerTest extends UnitTestCase
         self::assertInstanceOf(JsonResponse::class, $res);
     }
 
-
-    /**
-     * @test
-     *
-     * @return void
-     */
-    public function itReturnsStaticContentIfExists()
+    #[Test]
+    public function itReturnsStaticContentIfExists(): void
     {
-        $mockComponent = $this->getMockBuilder(StaticDocumentComponent::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getOutput'])
-            ->getMock();
+        $mockComponent = $this->createMock(StaticDocumentComponent::class);
 
         $content = uniqid('content_');
 
@@ -76,8 +59,10 @@ class PageContentErrorHandlerTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)->addMethods([]
-        )->disableOriginalConstructor()->getMock();
+        $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)->addMethods(
+            []
+        )->disableOriginalConstructor()
+            ->getMock();
         $reflection = new ReflectionClass(PageContentErrorHandler::class);
         $reflection_property = $reflection->getProperty('statusCode');
         $reflection_property->setAccessible(true);

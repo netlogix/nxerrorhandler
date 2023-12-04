@@ -4,16 +4,17 @@
 	"type": "typo3-cms-extension",
 	"license": "MIT",
 	"require": {
-		"php": "^7.4 || ^8.0 || ^8.1",
-		"typo3/cms-core": "^10.4 || ^11.5",
-		"typo3/cms-frontend": "^10.4 || ^11.5",
-		"typo3/cms-extbase": "^10.4 || ^11.5"
+		"php": "^8.1",
+		"typo3/cms-core": "^12.4",
+		"typo3/cms-frontend": "^12.4",
+		"typo3/cms-extbase": "^12.4"
 	},
 	"require-dev": {
 		"ext-sqlite3": "*",
-		"nimut/testing-framework": "^6.0",
-		"nimut/phpunit-merger": "^1.1",
-		"phpunit/phpcov": "^8.2"
+		"ssch/typo3-rector": "^1.5",
+		"typo3/testing-framework": "^8.0",
+		"phpunit/phpcov": "^9.0",
+		"netlogix/coding-guidelines-php": "^1.0"
 	},
 	"suggest": {
 		"netlogix/nxsentry": "Send errors and exceptions to sentry"
@@ -31,7 +32,7 @@
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "nxerrorhandler",
-			"web-dir": ".Build/Web",
+			"web-dir": ".Build/public",
 			"cms-package-dir": "{$vendor-dir}/typo3/cms"
 		}
 	},
@@ -44,12 +45,18 @@
 		}
 	},
 	"scripts": {
+		"rector": "rector process --dry-run",
+		"rector-fix": "rector process",
+		"lint": "ecs check",
+		"lint-fix": "ecs check --fix",
+		"test-unit": "phpunit -c phpunit.xml",
+		"test-functional": "phpunit -c phpunit_functional.xml",
 		"post-autoload-dump": [
 			"@prepare-extension-test-structure",
-			"mkdir --parents .Build/logs/"
+			"mkdir -p .Build/logs/"
 		],
 		"prepare-extension-test-structure": [
-			"Nimut\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+			"TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
 		]
 	}
 }

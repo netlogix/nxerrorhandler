@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Command;
 
+use InvalidArgumentException;
 use Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler;
 use Netlogix\Nxerrorhandler\Exception\Exception;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
@@ -11,6 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -20,16 +24,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GenerateErrorPagesCommand extends Command
 {
+    private int|bool|null $deploymentDate = null;
 
-    /**
-     * @var integer
-     */
-    private $deploymentDate;
-
-    /**
-     * @var GeneralExceptionHandler
-     */
-    private $exceptionHandler;
+    private ?GeneralExceptionHandler $exceptionHandler = null;
 
     protected function configure()
     {
@@ -59,23 +56,22 @@ class GenerateErrorPagesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $finder = GeneralUtility::makeInstance(SiteFinder::class);
-        $forceGeneration = (bool)$input->getArgument('forceGeneration');
+        $forceGeneration = (bool) $input->getArgument('forceGeneration');
 
         foreach ($finder->getAllSites() as $site) {
             $errorHandlingConfiguration = [];
             foreach ($site->getConfiguration()['errorHandling'] ?? [] as $configuration) {
                 $code = $configuration['errorCode'];
                 unset($configuration['errorCode']);
-                $errorHandlingConfiguration[(int)$code] = $configuration;
+                $errorHandlingConfiguration[(int) $code] = $configuration;
             }
 
-            if (empty($errorHandlingConfiguration)) {
+            if ($errorHandlingConfiguration === []) {
                 continue;
             }
 
-            GeneralUtility::setIndpEnv('TYPO3_REQUEST_URL', (string)$site->getBase());
+            GeneralUtility::setIndpEnv('TYPO3_REQUEST_URL', (string) $site->getBase());
             foreach ($errorHandlingConfiguration as $errorCode => $configuration) {
                 foreach ($site->getLanguages() as $language) {
                     if (!$forceGeneration && !$this->checkIfErrorPageNeedsRegeneration($errorCode, $site, $language)) {
@@ -98,10 +94,9 @@ class GenerateErrorPagesCommand extends Command
                             $language->getLanguageId(),
                             $resolvedUrl
                         );
-                        $this->getExceptionHandler()->logError(
-                            new \Exception($message, 1395152041),
-                            GeneralExceptionHandler::CONTEXT_CLI
-                        );
+                        $this->getExceptionHandler()
+                            ->logError(new \Exception($message, 1395152041), GeneralExceptionHandler::CONTEXT_CLI);
+
                         continue;
                     }
 
@@ -120,6 +115,7 @@ class GenerateErrorPagesCommand extends Command
         } elseif (!is_dir(ConfigurationService::getErrorDocumentDirectory())) {
             throw new Exception('Target directory is not a directory', 1394124945);
         }
+
         if (!file_exists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess')) {
             GeneralUtility::writeFile(ConfigurationService::getErrorDocumentDirectory() . '.htaccess', 'deny from all');
         }
@@ -130,31 +126,37 @@ class GenerateErrorPagesCommand extends Command
         if (!is_dir($this->getErrorDocumentPath($errorCode))) {
             GeneralUtility::mkdir($this->getErrorDocumentPath($errorCode));
         }
+
         $file = $this->getErrorDocumentFilePath($errorCode, $site, $language);
         GeneralUtility::writeFile($file, $content);
     }
 
     private function getExceptionHandler(): GeneralExceptionHandler
     {
-        if ($this->exceptionHandler === null) {
+        if (!$this->exceptionHandler instanceof GeneralExceptionHandler) {
             $this->exceptionHandler = GeneralUtility::makeInstance(GeneralExceptionHandler::class);
         }
+
         return $this->exceptionHandler;
     }
 
-    private function checkIfErrorPageNeedsRegeneration(int $errorCode, Site $site, SiteLanguage $language)
+    private function checkIfErrorPageNeedsRegeneration(int $errorCode, Site $site, SiteLanguage $language): bool
     {
         $file = $this->getErrorDocumentFilePath($errorCode, $site, $language);
-        if (!file_exists($file) || filemtime($file) < $this->getDeploymentDate()) {
-            return true;
-        }
 
-        return false;
+        return !file_exists($file) || filemtime($file) < $this->getDeploymentDate();
     }
 
     private function getErrorDocumentFilePath(int $errorCode, Site $site, SiteLanguage $language): string
     {
-        return sprintf(ConfigurationService::getErrorDocumentFilePath(), $errorCode, $language->getBase()->getHost(), $site->getRootPageId(), $language->getLanguageId());
+        return sprintf(
+            ConfigurationService::getErrorDocumentFilePath(),
+            $errorCode,
+            $language->getBase()
+                ->getHost(),
+            $site->getRootPageId(),
+            $language->getLanguageId()
+        );
     }
 
     private function getErrorDocumentPath(int $errorCode): string
@@ -167,6 +169,7 @@ class GenerateErrorPagesCommand extends Command
         if ($this->deploymentDate === null) {
             $this->deploymentDate = filectime(Environment::getProjectPath());
         }
+
         return $this->deploymentDate;
     }
 
@@ -178,25 +181,31 @@ class GenerateErrorPagesCommand extends Command
         $linkService = GeneralUtility::makeInstance(LinkService::class);
         $urlParams = $linkService->resolve($typoLinkUrl);
         if ($urlParams['type'] !== 'page' && $urlParams['type'] !== 'url') {
-            throw new \InvalidArgumentException('PageContentErrorHandler can only handle TYPO3 urls of types "page" or "url"', 1588933778);
+            throw new InvalidArgumentException(
+                'PageContentErrorHandler can only handle TYPO3 urls of types "page" or "url"',
+                1588933778
+            );
         }
+
         if ($urlParams['type'] === 'url') {
             return $urlParams['url'];
         }
 
-        // Get the site related to the configured error page
-        $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int)$urlParams['pageuid']);
-        // Fall back to current request for the site
-        if (!$site instanceof Site) {
+        try {
+            // Get the site related to the configured error page
+            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int) $urlParams['pageuid']);
+        } catch (SiteNotFoundException) {
+            // Fall back to current request for the site
             $site = $request->getAttribute('site', null);
         }
+
         /** @var SiteLanguage $requestLanguage */
         $requestLanguage = $request->getAttribute('language', null);
         // Try to get the current request language from the site that was found above
         if ($requestLanguage instanceof SiteLanguage) {
             try {
                 $language = $site->getLanguageById($requestLanguage->getLanguageId());
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 $language = $site->getDefaultLanguage();
             }
         } else {
@@ -204,26 +213,29 @@ class GenerateErrorPagesCommand extends Command
         }
 
         // Build Url
-        $uri = $site->getRouter()->generateUri(
-            (int)$urlParams['pageuid'],
-            ['_language' => $language]
-        );
+        $uri = $site->getRouter()
+            ->generateUri((int) $urlParams['pageuid'], [
+                '_language' => $language,
+            ]);
 
         // Fallback to the current URL if the site is not having a proper scheme and host
         $currentUri = $request->getUri();
-        if (empty($uri->getScheme())) {
+        if ($uri->getScheme() === '') {
             $uri = $uri->withScheme($currentUri->getScheme());
         }
-        if (empty($uri->getUserInfo())) {
+
+        if ($uri->getUserInfo() === '') {
             $uri = $uri->withUserInfo($currentUri->getUserInfo());
         }
-        if (empty($uri->getHost())) {
+
+        if ($uri->getHost() === '') {
             $uri = $uri->withHost($currentUri->getHost());
         }
+
         if ($uri->getPort() === null) {
             $uri = $uri->withPort($currentUri->getPort());
         }
 
-        return (string)$uri;
+        return (string) $uri;
     }
 }

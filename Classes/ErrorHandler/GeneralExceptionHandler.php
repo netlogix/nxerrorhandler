@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Netlogix\Nxerrorhandler\ErrorHandler;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\AbstractComponent;
@@ -15,21 +18,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GeneralExceptionHandler extends ProductionExceptionHandler
 {
-
     /**
      * @var array
      */
-    protected $configuration;
+    protected $configuration = [];
 
     /**
      * @var AbstractComponent[]
      */
     protected array $components = [];
 
-    /**
-     * @inheritdoc
-     */
-    public function echoExceptionWeb(Throwable $exception)
+    public function echoExceptionWeb(Throwable $exception): void
     {
         try {
             $this->initialize();
@@ -38,46 +37,47 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
 
             $this->logError($exception, self::CONTEXT_WEB, $effectiveStatusCode);
 
-
             $message = $this->getMessage($exception);
 
             $errorDocument = $this->getErrorDocument($effectiveStatusCode, $message, $exception);
 
             echo $errorDocument;
-        } catch (Throwable $t) {
-            $this->writeLogEntries($t, self::CONTEXT_WEB);
+        } catch (Throwable $throwable) {
+            $this->writeLogEntries($throwable, self::CONTEXT_WEB);
             parent::echoExceptionWeb($exception);
         }
     }
 
-    public function echoExceptionCLI(Throwable $exception)
+    public function echoExceptionCLI(Throwable $exception): void
     {
         try {
             $this->logError($exception, self::CONTEXT_CLI, 500);
             exit(1);
-        } catch (Throwable $t) {
-            $this->writeLogEntries($t, self::CONTEXT_CLI);
+        } catch (Throwable $throwable) {
+            $this->writeLogEntries($throwable, self::CONTEXT_CLI);
             parent::echoExceptionCLI($exception);
         }
     }
 
-    public function logError(Throwable $exception, string $context, int $statusCode = 500)
+    public function logError(Throwable $exception, string $context, int $statusCode = 500): void
     {
         try {
             $this->initialize();
-        } catch (Throwable $t) {
+        } catch (Throwable) {
             $this->writeLogEntries($exception, $context);
+
             return;
         }
 
         $suppressDefaultLogEntries = false;
         foreach ($this->components as $component) {
             $suppressDefaultLogEntries = $suppressDefaultLogEntries || $component->logError(
-                    $exception,
-                    $context,
-                    $statusCode
-                );
+                $exception,
+                $context,
+                $statusCode
+            );
         }
+
         if (!$suppressDefaultLogEntries) {
             $this->writeLogEntries($exception, $context);
         }
@@ -85,14 +85,16 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
 
     protected function initialize()
     {
-        if (empty($this->components)) {
-            if (!empty(ConfigurationService::getExceptionHandlerComponents())) {
+        if ($this->components === []) {
+            if (ConfigurationService::getExceptionHandlerComponents() !== []) {
                 foreach (ConfigurationService::getExceptionHandlerComponents() as $componentClass) {
                     if (!class_exists($componentClass)) {
                         throw new Exception(
-                            'Error handler component ' . $componentClass . ' does not exist', 1395074867
+                            'Error handler component ' . $componentClass . ' does not exist',
+                            1395074867
                         );
                     }
+
                     $this->components[] = GeneralUtility::makeInstance($componentClass);
                 }
             } else {
@@ -115,8 +117,8 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
     {
         $statusCode = 500;
         foreach ($headers as $header) {
-            if (preg_match('~^HTTP/1.[01] (\d{3}) ~', $header, $matches) === 1) {
-                $statusCode = (int)$matches[1];
+            if (preg_match('~^HTTP/1.[01] (\d{3}) ~', (string) $header, $matches) === 1) {
+                $statusCode = (int) $matches[1];
             }
         }
 
@@ -128,15 +130,11 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         return $GLOBALS['TYPO3_REQUEST'];
     }
 
-    /**
-     * @param Throwable $exception
-     * @return int
-     */
     protected function sendStatusCodes(Throwable $exception): int
     {
         $statusHeaders = $this->getStatusHeaders($exception);
         $effectiveStatusCode = 500;
-        if (!empty($statusHeaders)) {
+        if ($statusHeaders !== []) {
             $effectiveStatusCode = $this->parseStatusHeadersForCode($statusHeaders);
             if (!headers_sent()) {
                 foreach ($statusHeaders as $header) {
@@ -147,22 +145,15 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             if (method_exists($exception, 'getStatusHeaders')) {
                 $effectiveStatusCode = $this->parseStatusHeadersForCode($exception->getStatusHeaders());
             }
+
             $this->sendStatusHeaders($exception);
         }
+
         return $effectiveStatusCode;
     }
 
-    /**
-     * @param int $effectiveStatusCode
-     * @param string $message
-     * @param Throwable $exception
-     * @return string
-     */
-    protected function getErrorDocument(
-        int $effectiveStatusCode,
-        string $message,
-        Throwable $exception
-    ): string {
+    protected function getErrorDocument(int $effectiveStatusCode, string $message, Throwable $exception): string
+    {
         $request = $this->getServerRequest();
 
         $errorDocument = '';
@@ -174,11 +165,14 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         }
 
         if ($errorDocument === '') {
-            $errorDocument = GeneralUtility::makeInstance(ErrorPageController::class)->errorAction(
+            /** @var ErrorPageController $errorPageController */
+            $errorPageController = GeneralUtility::makeInstance(ErrorPageController::class);
+            return $errorPageController->errorAction(
                 $this->getTitle($exception),
                 $this->getMessage($exception)
             );
         }
+
         return $errorDocument;
     }
 }

@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Netlogix\Nxerrorhandler\ErrorHandler\Component;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 abstract class AbstractComponent
 {
-
     /**
      * Define HTTP headers to be sent to the client.
      */
-    public function getHttpHeaders(\Throwable $exception): array
+    public function getHttpHeaders(Throwable $exception): array
     {
         return [];
     }
@@ -20,7 +23,7 @@ abstract class AbstractComponent
      * If TRUE is returned the default logging of TYPO3 will not be done. Other components might still
      * log the error somehow
      */
-    public function logError(\Throwable $exception, string $context, int $statusCode = 500): bool
+    public function logError(Throwable $exception, string $context, int $statusCode = 500): bool
     {
         return false;
     }
@@ -33,5 +36,4 @@ abstract class AbstractComponent
     {
         return '';
     }
-
 }
