@@ -17,7 +17,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
-    protected array $pathsToLinkInTestInstance = ['typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites'];
+    protected array $pathsToLinkInTestInstance = [
+        'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites',
+    ];
 
     protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
@@ -90,7 +92,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration(): void
+    public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration(): never
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
 
@@ -108,7 +110,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured(): void
+    public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured(): never
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
 
@@ -129,7 +131,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function itCreates400ErrorDocumentsForSite(): void
+    public function itCreates400ErrorDocumentsForSite(): never
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
 
