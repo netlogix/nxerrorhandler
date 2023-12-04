@@ -14,7 +14,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class StaticDocumentComponentTest extends FunctionalTestCase
 {
-    protected array $pathsToLinkInTestInstance = ['typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites'];
+    protected array $pathsToLinkInTestInstance = [
+        'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites',
+    ];
 
     protected array $testExtensionsToLoad = ['typo3conf/ext/nxerrorhandler'];
 
@@ -39,7 +41,8 @@ class StaticDocumentComponentTest extends FunctionalTestCase
 
         $subject
             ->expects($matcher)
-            ->method('getContentFromPath')->willReturnCallback(
+            ->method('getContentFromPath')
+            ->willReturnCallback(
                 static function (string $errorDocumentFileName) use ($errorCode, $matcher): ?string {
                     match ($matcher->numberOfInvocations()) {
                         1 => self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName),
