@@ -6,6 +6,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -15,15 +16,10 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class PageContentErrorHandlerTest extends UnitTestCase
 {
-    /**
-     * @var PageContentErrorHandler|MockObject
-     */
-    private $subject;
+    private MockObject&PageContentErrorHandler $subject;
 
-    /**
-     * @test
-     */
-    public function itReturnsJsonResponseForJsonRequest()
+    #[Test]
+    public function itReturnsJsonResponseForJsonRequest(): void
     {
         $req = new ServerRequest();
         $req = $req->withHeader('Accept', 'application/json');
@@ -33,10 +29,8 @@ class PageContentErrorHandlerTest extends UnitTestCase
         self::assertInstanceOf(JsonResponse::class, $res);
     }
 
-    /**
-     * @test
-     */
-    public function itReturnsJsonResponseForJsonApiRequest()
+    #[Test]
+    public function itReturnsJsonResponseForJsonApiRequest(): void
     {
         $req = new ServerRequest();
         $req = $req->withHeader('Accept', 'application/vnd.api+json');
@@ -46,15 +40,10 @@ class PageContentErrorHandlerTest extends UnitTestCase
         self::assertInstanceOf(JsonResponse::class, $res);
     }
 
-    /**
-     * @test
-     */
-    public function itReturnsStaticContentIfExists()
+    #[Test]
+    public function itReturnsStaticContentIfExists(): void
     {
-        $mockComponent = $this->getMockBuilder(StaticDocumentComponent::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getOutput'])
-            ->getMock();
+        $mockComponent = $this->createMock(StaticDocumentComponent::class);
 
         $content = uniqid('content_');
 

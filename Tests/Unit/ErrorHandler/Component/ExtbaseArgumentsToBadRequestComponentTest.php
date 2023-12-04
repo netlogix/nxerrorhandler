@@ -6,19 +6,19 @@ namespace Netlogix\Nxerrorhandler\Tests\Unit\ErrorHandler\Component;
 
 use Exception;
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Exception\RequiredArgumentMissingException;
 use TYPO3\CMS\Extbase\Property\Exception as PropertyException;
 use TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ExtbaseArgumentsToBadRequestComponentTest extends UnitTestCase
 {
-    /**
-     * @dataProvider exceptionHeaderStatusDataProvider
-     * @test
-     */
-    public function itCanGetAdditionalHeadersForExceptionTypes(Exception $e, string $status)
+    #[DataProvider('exceptionHeaderStatusDataProvider')]
+    #[Test]
+    public function itCanGetAdditionalHeadersForExceptionTypes(Exception $e, string $status): void
     {
         $subject = new ExtbaseArgumentsToBadRequestComponent();
         $res = $subject->getHttpHeaders($e);
@@ -27,10 +27,8 @@ class ExtbaseArgumentsToBadRequestComponentTest extends UnitTestCase
         self::assertEquals($status, $res[0]);
     }
 
-    /**
-     * @test
-     */
-    public function itDoesNotReturnStatusForUnmappedException()
+    #[Test]
+    public function itDoesNotReturnStatusForUnmappedException(): void
     {
         $subject = new ExtbaseArgumentsToBadRequestComponent();
         $res = $subject->getHttpHeaders(new Exception());

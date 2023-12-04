@@ -7,11 +7,13 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\Command;
 use FilesystemIterator;
 use Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
+use ReflectionObject;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
@@ -34,7 +36,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         ],
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -48,25 +50,21 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
         $this->purgeCreatedDirectoriesAndFiles();
     }
 
-    /**
-     * @test
-     */
-    public function itCreatesErrorDocumentDirectory()
+    #[Test]
+    public function itCreatesErrorDocumentDirectory(): void
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $subject = $this->getMockBuilder(GenerateErrorPagesCommand::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $subject = $this->createMock(GenerateErrorPagesCommand::class);
 
-        $reflectionObject = new \ReflectionObject($subject);
+        $reflectionObject = new ReflectionObject($subject);
         $reflectionMethod = $reflectionObject->getMethod('initialize');
         $reflectionMethod->setAccessible(true);
 
@@ -75,18 +73,14 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         self::assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
     }
 
-    /**
-     * @test
-     */
-    public function itCreatesHtaccessInErrorDocumentDirectory()
+    #[Test]
+    public function itCreatesHtaccessInErrorDocumentDirectory(): void
     {
         self::assertFileDoesNotExist(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
 
-        $subject = $this->getMockBuilder(GenerateErrorPagesCommand::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $subject = $this->createMock(GenerateErrorPagesCommand::class);
 
-        $reflectionObject = new \ReflectionObject($subject);
+        $reflectionObject = new ReflectionObject($subject);
         $reflectionMethod = $reflectionObject->getMethod('initialize');
         $reflectionMethod->setAccessible(true);
 
@@ -95,10 +89,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         self::assertFileExists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
     }
 
-    /**
-     * @test
-     */
-    public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration()
+    #[Test]
+    public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration(): void
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
@@ -113,10 +105,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         self::assertEquals(1, iterator_count($iter));
     }
 
-    /**
-     * @test
-     */
-    public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured()
+    #[Test]
+    public function itDoesNotCreateErrorDocumentsIfSiteConfigurationDoesNotHaveErrorDocumentConfigured(): void
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
@@ -134,10 +124,8 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         self::assertEquals(1, iterator_count($iter));
     }
 
-    /**
-     * @test
-     */
-    public function itCreates400ErrorDocumentsForSite()
+    #[Test]
+    public function itCreates400ErrorDocumentsForSite(): void
     {
         self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 

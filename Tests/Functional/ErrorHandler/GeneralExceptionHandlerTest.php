@@ -6,10 +6,11 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\ErrorHandler;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler;
 use Netlogix\Nxerrorhandler\Tests\Unit\Fixtures\ComponentFixture;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class GeneralExceptionHandlerTest extends FunctionalTestCase
 {
@@ -28,10 +29,8 @@ class GeneralExceptionHandlerTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
-    public function itRendersContentFromErrorDocumentForException()
+    #[Test]
+    public function itRendersContentFromErrorDocumentForException(): void
     {
         $message = uniqid('message_');
 

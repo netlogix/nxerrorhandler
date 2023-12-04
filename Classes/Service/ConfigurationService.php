@@ -10,9 +10,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConfigurationService
 {
-    public const EXCEPTION_HANDLER_COMPONENTS = 'exceptionHandlerComponents';
+    /**
+     * @var string
+     */
+    final public const EXCEPTION_HANDLER_COMPONENTS = 'exceptionHandlerComponents';
 
-    public const TARGET_DIRECTORY = '/tx_nxerrorhandler/';
+    /**
+     * @var string
+     */
+    final public const TARGET_DIRECTORY = '/tx_nxerrorhandler/';
 
     /**
      * @return mixed
@@ -26,7 +32,7 @@ class ConfigurationService
     {
         $components = self::getExtensionConfiguration(self::EXCEPTION_HANDLER_COMPONENTS);
 
-        return !empty($components) ? (array) $components : [];
+        return empty($components) ? [] : (array) $components;
     }
 
     public static function getErrorDocumentDirectory(): string

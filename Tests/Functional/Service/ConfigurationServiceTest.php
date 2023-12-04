@@ -6,6 +6,7 @@ namespace Netlogix\Nxerrorhandler\Tests\Functional\Service;
 
 use Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ConfigurationServiceTest extends FunctionalTestCase
@@ -20,10 +21,8 @@ class ConfigurationServiceTest extends FunctionalTestCase
         ],
     ];
 
-    /**
-     * @test
-     */
-    public function itCanGetExceptionHandlerComponents()
+    #[Test]
+    public function itCanGetExceptionHandlerComponents(): void
     {
         self::assertNotEmpty(ConfigurationService::getExceptionHandlerComponents());
         self::assertEquals(

@@ -23,15 +23,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GenerateErrorPagesCommand extends Command
 {
-    /**
-     * @var integer
-     */
-    private $deploymentDate;
+    private int|bool|null $deploymentDate = null;
 
-    /**
-     * @var GeneralExceptionHandler
-     */
-    private $exceptionHandler;
+    private ?GeneralExceptionHandler $exceptionHandler = null;
 
     protected function configure()
     {
@@ -72,7 +66,7 @@ class GenerateErrorPagesCommand extends Command
                 $errorHandlingConfiguration[(int) $code] = $configuration;
             }
 
-            if (empty($errorHandlingConfiguration)) {
+            if ($errorHandlingConfiguration === []) {
                 continue;
             }
 
@@ -120,6 +114,7 @@ class GenerateErrorPagesCommand extends Command
         } elseif (!is_dir(ConfigurationService::getErrorDocumentDirectory())) {
             throw new Exception('Target directory is not a directory', 1394124945);
         }
+
         if (!file_exists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess')) {
             GeneralUtility::writeFile(ConfigurationService::getErrorDocumentDirectory() . '.htaccess', 'deny from all');
         }
@@ -130,27 +125,25 @@ class GenerateErrorPagesCommand extends Command
         if (!is_dir($this->getErrorDocumentPath($errorCode))) {
             GeneralUtility::mkdir($this->getErrorDocumentPath($errorCode));
         }
+
         $file = $this->getErrorDocumentFilePath($errorCode, $site, $language);
         GeneralUtility::writeFile($file, $content);
     }
 
     private function getExceptionHandler(): GeneralExceptionHandler
     {
-        if ($this->exceptionHandler === null) {
+        if (!$this->exceptionHandler instanceof GeneralExceptionHandler) {
             $this->exceptionHandler = GeneralUtility::makeInstance(GeneralExceptionHandler::class);
         }
 
         return $this->exceptionHandler;
     }
 
-    private function checkIfErrorPageNeedsRegeneration(int $errorCode, Site $site, SiteLanguage $language)
+    private function checkIfErrorPageNeedsRegeneration(int $errorCode, Site $site, SiteLanguage $language): bool
     {
         $file = $this->getErrorDocumentFilePath($errorCode, $site, $language);
-        if (!file_exists($file) || filemtime($file) < $this->getDeploymentDate()) {
-            return true;
-        }
 
-        return false;
+        return !file_exists($file) || filemtime($file) < $this->getDeploymentDate();
     }
 
     private function getErrorDocumentFilePath(int $errorCode, Site $site, SiteLanguage $language): string
@@ -192,23 +185,21 @@ class GenerateErrorPagesCommand extends Command
                 1588933778
             );
         }
+
         if ($urlParams['type'] === 'url') {
             return $urlParams['url'];
         }
 
         // Get the site related to the configured error page
         $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int) $urlParams['pageuid']);
-        // Fall back to current request for the site
-        if (!$site instanceof Site) {
-            $site = $request->getAttribute('site', null);
-        }
+
         /** @var SiteLanguage $requestLanguage */
         $requestLanguage = $request->getAttribute('language', null);
         // Try to get the current request language from the site that was found above
         if ($requestLanguage instanceof SiteLanguage) {
             try {
                 $language = $site->getLanguageById($requestLanguage->getLanguageId());
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 $language = $site->getDefaultLanguage();
             }
         } else {
@@ -223,15 +214,18 @@ class GenerateErrorPagesCommand extends Command
 
         // Fallback to the current URL if the site is not having a proper scheme and host
         $currentUri = $request->getUri();
-        if (empty($uri->getScheme())) {
+        if ($uri->getScheme() === '') {
             $uri = $uri->withScheme($currentUri->getScheme());
         }
-        if (empty($uri->getUserInfo())) {
+
+        if ($uri->getUserInfo() === '') {
             $uri = $uri->withUserInfo($currentUri->getUserInfo());
         }
-        if (empty($uri->getHost())) {
+
+        if ($uri->getHost() === '') {
             $uri = $uri->withHost($currentUri->getHost());
         }
+
         if ($uri->getPort() === null) {
             $uri = $uri->withPort($currentUri->getPort());
         }

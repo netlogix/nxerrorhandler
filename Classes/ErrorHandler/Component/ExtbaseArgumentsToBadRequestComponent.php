@@ -20,10 +20,12 @@ class ExtbaseArgumentsToBadRequestComponent extends AbstractComponent
     {
         if ($exception instanceof TargetNotFoundException) {
             return [HttpUtility::HTTP_STATUS_404];
-        } elseif ($exception instanceof PropertyException || $exception instanceof RequiredArgumentMissingException) {
-            return [HttpUtility::HTTP_STATUS_400];
-        } else {
-            return [];
         }
+
+        if ($exception instanceof PropertyException || $exception instanceof RequiredArgumentMissingException) {
+            return [HttpUtility::HTTP_STATUS_400];
+        }
+
+        return [];
     }
 }

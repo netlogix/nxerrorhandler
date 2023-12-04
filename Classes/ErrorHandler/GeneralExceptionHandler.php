@@ -21,14 +21,14 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
     /**
      * @var array
      */
-    protected $configuration;
+    protected $configuration = [];
 
     /**
      * @var AbstractComponent[]
      */
     protected array $components = [];
 
-    public function echoExceptionWeb(Throwable $exception)
+    public function echoExceptionWeb(Throwable $exception): void
     {
         try {
             $this->initialize();
@@ -42,28 +42,28 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             $errorDocument = $this->getErrorDocument($effectiveStatusCode, $message, $exception);
 
             echo $errorDocument;
-        } catch (Throwable $t) {
-            $this->writeLogEntries($t, self::CONTEXT_WEB);
+        } catch (Throwable $throwable) {
+            $this->writeLogEntries($throwable, self::CONTEXT_WEB);
             parent::echoExceptionWeb($exception);
         }
     }
 
-    public function echoExceptionCLI(Throwable $exception)
+    public function echoExceptionCLI(Throwable $exception): void
     {
         try {
             $this->logError($exception, self::CONTEXT_CLI, 500);
             exit(1);
-        } catch (Throwable $t) {
-            $this->writeLogEntries($t, self::CONTEXT_CLI);
+        } catch (Throwable $throwable) {
+            $this->writeLogEntries($throwable, self::CONTEXT_CLI);
             parent::echoExceptionCLI($exception);
         }
     }
 
-    public function logError(Throwable $exception, string $context, int $statusCode = 500)
+    public function logError(Throwable $exception, string $context, int $statusCode = 500): void
     {
         try {
             $this->initialize();
-        } catch (Throwable $t) {
+        } catch (Throwable) {
             $this->writeLogEntries($exception, $context);
 
             return;
@@ -77,6 +77,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
                 $statusCode
             );
         }
+
         if (!$suppressDefaultLogEntries) {
             $this->writeLogEntries($exception, $context);
         }
@@ -84,8 +85,8 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
 
     protected function initialize()
     {
-        if (empty($this->components)) {
-            if (!empty(ConfigurationService::getExceptionHandlerComponents())) {
+        if ($this->components === []) {
+            if (ConfigurationService::getExceptionHandlerComponents() !== []) {
                 foreach (ConfigurationService::getExceptionHandlerComponents() as $componentClass) {
                     if (!class_exists($componentClass)) {
                         throw new Exception(
@@ -93,6 +94,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
                             1395074867
                         );
                     }
+
                     $this->components[] = GeneralUtility::makeInstance($componentClass);
                 }
             } else {
@@ -115,7 +117,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
     {
         $statusCode = 500;
         foreach ($headers as $header) {
-            if (preg_match('~^HTTP/1.[01] (\d{3}) ~', $header, $matches) === 1) {
+            if (preg_match('~^HTTP/1.[01] (\d{3}) ~', (string) $header, $matches) === 1) {
                 $statusCode = (int) $matches[1];
             }
         }
@@ -132,7 +134,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
     {
         $statusHeaders = $this->getStatusHeaders($exception);
         $effectiveStatusCode = 500;
-        if (!empty($statusHeaders)) {
+        if ($statusHeaders !== []) {
             $effectiveStatusCode = $this->parseStatusHeadersForCode($statusHeaders);
             if (!headers_sent()) {
                 foreach ($statusHeaders as $header) {
@@ -143,6 +145,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
             if (method_exists($exception, 'getStatusHeaders')) {
                 $effectiveStatusCode = $this->parseStatusHeadersForCode($exception->getStatusHeaders());
             }
+
             $this->sendStatusHeaders($exception);
         }
 
@@ -162,7 +165,7 @@ class GeneralExceptionHandler extends ProductionExceptionHandler
         }
 
         if ($errorDocument === '') {
-            $errorDocument = GeneralUtility::makeInstance(ErrorPageController::class)->errorAction(
+            return GeneralUtility::makeInstance(ErrorPageController::class)->errorAction(
                 $this->getTitle($exception),
                 $this->getMessage($exception)
             );

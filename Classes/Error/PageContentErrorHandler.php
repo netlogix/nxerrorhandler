@@ -22,6 +22,7 @@ class PageContentErrorHandler extends T3PageContentErrorHandler
         if ($this->isJson($request)) {
             return new JsonResponse([], $this->statusCode);
         }
+
         $staticDocumentComponent = GeneralUtility::makeInstance(StaticDocumentComponent::class);
         $content = $staticDocumentComponent->getOutput(404, $request, $message);
         if ($content === '') {
@@ -31,7 +32,7 @@ class PageContentErrorHandler extends T3PageContentErrorHandler
         return new HtmlResponse($content, $this->statusCode);
     }
 
-    private function isJson(ServerRequestInterface $request)
+    private function isJson(ServerRequestInterface $request): bool
     {
         $accept = GeneralUtility::trimExplode(',', $request->getHeaderLine('Accept'))[0] ?? '';
 

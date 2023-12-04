@@ -5,7 +5,11 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
+use Rector\PHPUnit\Set\PHPUnitLevelSetList;
 use Rector\PostRector\Rector\NameImportingPostRector;
+use Rector\Set\ValueObject\LevelSetList;
+use Rector\Set\ValueObject\SetList;
 use Ssch\TYPO3Rector\Rector\General\ConvertImplicitVariablesToExplicitGlobalsRector;
 use Ssch\TYPO3Rector\Rector\General\ExtEmConfRector;
 use Ssch\TYPO3Rector\Rector\v11\v0\SubstituteConstantsModeAndRequestTypeRector;
@@ -19,6 +23,20 @@ return static function (RectorConfig $rectorConfig): void {
     // $parameters->set(Typo3Option::TYPOSCRIPT_INDENT_SIZE, 2);
 
     $rectorConfig->sets([
+        // PHP
+        LevelSetList::UP_TO_PHP_81,
+
+        SetList::CODE_QUALITY,
+        SetList::CODING_STYLE,
+        SetList::DEAD_CODE,
+        SetList::TYPE_DECLARATION,
+        SetList::EARLY_RETURN,
+        SetList::INSTANCEOF,
+
+        // PhpUnit
+        PHPUnitLevelSetList::UP_TO_PHPUNIT_100,
+
+        // TYPO3
         // v7
         Typo3SetList::TCA_76,
 
@@ -73,6 +91,10 @@ return static function (RectorConfig $rectorConfig): void {
 
     // If you use importNames(), you should consider excluding some TYPO3 files.
     $rectorConfig->skip([
+        // PHP
+        AddLiteralSeparatorToNumberRector::class,
+
+        // TYPO3
         // @see https://github.com/sabbelasichon/typo3-rector/issues/2536
         __DIR__ . '/**/Configuration/ExtensionBuilder/*',
         // We skip those directories on purpose as there might be node_modules or similar

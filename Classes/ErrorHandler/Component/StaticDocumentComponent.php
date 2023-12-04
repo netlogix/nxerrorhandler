@@ -20,23 +20,17 @@ class StaticDocumentComponent extends AbstractComponent
         $currentUrl = $request ? (string) $request->getUri() : GeneralUtility::getIndpEnv('REQUEST_URI');
         $errorDocument = $this->getErrorDocumentFromFile($errorCode, $request);
         $errorDocument = str_replace('###CURRENT_URL###', htmlspecialchars($currentUrl), $errorDocument);
-        $errorDocument = str_replace('###REASON###', htmlspecialchars($reason), $errorDocument);
 
-        return $errorDocument;
+        return str_replace('###REASON###', htmlspecialchars($reason), $errorDocument);
     }
 
     protected function getErrorDocumentFromFile(int $errorCode, ServerRequestInterface $request): string
     {
         /** @var Site $site */
         $site = $request->getAttribute('site');
-        if ($site === null) {
-            return '';
-        }
+
         /** @var SiteLanguage $siteLanguage */
         $siteLanguage = $request->getAttribute('language');
-        if ($siteLanguage === null) {
-            $siteLanguage = $site->getDefaultLanguage();
-        }
 
         $errorHandlingConfiguration = [];
         foreach ($site->getConfiguration()['errorHandling'] ?? [] as $configuration) {
@@ -90,10 +84,14 @@ class StaticDocumentComponent extends AbstractComponent
 
     protected function getContentFromPath(string $errorDocumentFileName): ?string
     {
-        if (file_exists($errorDocumentFileName) && is_readable($errorDocumentFileName)) {
-            return GeneralUtility::getUrl($errorDocumentFileName);
+        if (!file_exists($errorDocumentFileName)) {
+            return null;
         }
 
-        return null;
+        if (!is_readable($errorDocumentFileName)) {
+            return null;
+        }
+
+        return GeneralUtility::getUrl($errorDocumentFileName);
     }
 }

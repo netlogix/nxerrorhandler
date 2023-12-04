@@ -13,17 +13,17 @@ class ExceptionHandlerFixture implements ExceptionHandlerInterface
     {
     }
 
-    public function handleException(Throwable $exception)
+    public function handleException(Throwable $exception): void
     {
         // NOOP
     }
 
-    public function echoExceptionWeb(Throwable $exception)
+    public function echoExceptionWeb(Throwable $exception): void
     {
         // NOOP
     }
 
-    public function echoExceptionCLI(Throwable $exception)
+    public function echoExceptionCLI(Throwable $exception): void
     {
         // NOOP
     }
