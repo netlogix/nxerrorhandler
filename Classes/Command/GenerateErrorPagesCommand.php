@@ -54,7 +54,7 @@ class GenerateErrorPagesCommand extends Command
         $this->initializeTargetDirectory();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $finder = GeneralUtility::makeInstance(SiteFinder::class);
         $forceGeneration = (bool) $input->getArgument('forceGeneration');
