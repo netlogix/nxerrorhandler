@@ -30,7 +30,7 @@ class StaticDocumentComponent extends AbstractComponent
         $site = $request->getAttribute('site');
 
         /** @var SiteLanguage $siteLanguage */
-        $siteLanguage = $request->getAttribute('language');
+        $siteLanguage = $request->getAttribute('language') ?? $site->getDefaultLanguage();
 
         $errorHandlingConfiguration = [];
         foreach ($site->getConfiguration()['errorHandling'] ?? [] as $configuration) {
