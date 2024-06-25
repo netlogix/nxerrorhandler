@@ -115,10 +115,6 @@ class GenerateErrorPagesCommand extends Command
         } elseif (!is_dir(ConfigurationService::getErrorDocumentDirectory())) {
             throw new Exception('Target directory is not a directory', 1394124945);
         }
-
-        if (!file_exists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess')) {
-            GeneralUtility::writeFile(ConfigurationService::getErrorDocumentDirectory() . '.htaccess', 'deny from all');
-        }
     }
 
     protected function saveErrorPage(int $errorCode, Site $site, SiteLanguage $language, string $content): void
