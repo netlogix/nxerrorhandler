@@ -45,8 +45,8 @@ class StaticDocumentComponentTest extends FunctionalTestCase
             ->willReturnCallback(
                 static function (string $errorDocumentFileName) use ($errorCode, $matcher): ?string {
                     match ($matcher->numberOfInvocations()) {
-                        1 => self::assertStringEndsWith('/' . $errorCode . '/-1-1.html', $errorDocumentFileName),
-                        2, 3 => self::assertStringEndsWith('/' . $errorCode . '/-1-0.html', $errorDocumentFileName),
+                        1 => self::assertStringEndsWith('/' . $errorCode . '/1-1.html', $errorDocumentFileName),
+                        2, 3 => self::assertStringEndsWith('/' . $errorCode . '/1-0.html', $errorDocumentFileName),
                     };
 
                     return null;

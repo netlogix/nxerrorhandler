@@ -152,8 +152,6 @@ class GenerateErrorPagesCommand extends Command
         return sprintf(
             ConfigurationService::getErrorDocumentFilePath(),
             $errorCode,
-            $language->getBase()
-                ->getHost(),
             $site->getRootPageId(),
             $language->getLanguageId()
         );

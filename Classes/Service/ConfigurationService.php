@@ -42,6 +42,6 @@ class ConfigurationService
 
     public static function getErrorDocumentFilePath(): string
     {
-        return ConfigurationService::getErrorDocumentDirectory() . '%s/%s-%s-%s.html';
+        return ConfigurationService::getErrorDocumentDirectory() . '%s/%s-%s.html';
     }
 }
