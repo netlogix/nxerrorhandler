@@ -37,7 +37,7 @@ class ConfigurationService
 
     public static function getErrorDocumentDirectory(): string
     {
-        return Environment::getVarPath() . self::TARGET_DIRECTORY;
+        return Environment::getPublicPath() . '/typo3temp/assets' . self::TARGET_DIRECTORY;
     }
 
     public static function getErrorDocumentFilePath(): string
