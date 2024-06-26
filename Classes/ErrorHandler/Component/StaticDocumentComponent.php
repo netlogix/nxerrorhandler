@@ -47,16 +47,12 @@ class StaticDocumentComponent extends AbstractComponent
                 sprintf(
                     $errorDocumentPath,
                     $errorCode,
-                    $siteLanguage->getBase()
-                        ->getHost(),
                     $rootPageId,
                     $siteLanguage->getLanguageId()
                 ),
                 sprintf(
                     $errorDocumentPath,
                     $errorCode,
-                    $siteLanguage->getBase()
-                        ->getHost(),
                     $rootPageId,
                     $site->getDefaultLanguage()
                         ->getLanguageId()
@@ -64,8 +60,6 @@ class StaticDocumentComponent extends AbstractComponent
                 sprintf(
                     $errorDocumentPath,
                     $errorCode,
-                    $site->getBase()
-                        ->getHost(),
                     $rootPageId,
                     $site->getDefaultLanguage()
                         ->getLanguageId()

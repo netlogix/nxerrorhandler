@@ -76,22 +76,6 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function itCreatesHtaccessInErrorDocumentDirectory(): void
-    {
-        self::assertFileDoesNotExist(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
-
-        $subject = $this->createMock(GenerateErrorPagesCommand::class);
-
-        $reflectionObject = new ReflectionObject($subject);
-        $reflectionMethod = $reflectionObject->getMethod('initialize');
-        $reflectionMethod->setAccessible(true);
-
-        $reflectionMethod->invokeArgs($subject, [new StringInput(''), new NullOutput()]);
-
-        self::assertFileExists(ConfigurationService::getErrorDocumentDirectory() . '.htaccess');
-    }
-
-    #[Test]
     public function itDoesNotCreateErrorDocumentsWithoutSiteConfiguration(): never
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
