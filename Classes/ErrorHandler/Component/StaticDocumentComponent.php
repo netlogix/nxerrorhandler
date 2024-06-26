@@ -44,26 +44,9 @@ class StaticDocumentComponent extends AbstractComponent
 
             $errorDocumentPath = ConfigurationService::getErrorDocumentFilePath();
             $errorDocumentFileNames = [
-                sprintf(
-                    $errorDocumentPath,
-                    $errorCode,
-                    $rootPageId,
-                    $siteLanguage->getLanguageId()
-                ),
-                sprintf(
-                    $errorDocumentPath,
-                    $errorCode,
-                    $rootPageId,
-                    $site->getDefaultLanguage()
-                        ->getLanguageId()
-                ),
-                sprintf(
-                    $errorDocumentPath,
-                    $errorCode,
-                    $rootPageId,
-                    $site->getDefaultLanguage()
-                        ->getLanguageId()
-                ),
+                sprintf($errorDocumentPath, $errorCode, $rootPageId, $siteLanguage->getLanguageId()),
+                sprintf($errorDocumentPath, $errorCode, $rootPageId, $site->getDefaultLanguage() ->getLanguageId()),
+                sprintf($errorDocumentPath, $errorCode, $rootPageId, $site->getDefaultLanguage() ->getLanguageId()),
             ];
             foreach ($errorDocumentFileNames as $errorDocumentFileName) {
                 $content = $this->getContentFromPath($errorDocumentFileName);
