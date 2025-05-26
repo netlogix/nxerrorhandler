@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Netlogix\Nxerrorhandler\Tests\Functional\ErrorHandler\Component;
+namespace Netlogix\Nxerrorhandler\Tests\Functional\Service;
 
-use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
+use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
@@ -12,7 +12,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class StaticDocumentComponentTest extends FunctionalTestCase
+class StaticDocumentOutputServiceTest extends FunctionalTestCase
 {
     protected array $pathsToLinkInTestInstance = [
         'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites',
@@ -32,26 +32,27 @@ class StaticDocumentComponentTest extends FunctionalTestCase
         $errorCode = 400;
         $request = new ServerRequest('/de/', 'GET');
 
-        $request = $request->withAttribute('site', (new SiteFinder())->getSiteByPageId(1));
+        $request = $request->withAttribute('site', $this->get(SiteFinder::class)->getSiteByPageId(1));
         $request = $request->withAttribute('language', new SiteLanguage(1, 'de_DE.UTF-8', new Uri('/de/'), []));
 
-        $subject = $this->getAccessibleMock(StaticDocumentComponent::class, ['getContentFromPath']);
+        $subject = $this->getAccessibleMock(StaticDocumentOutputService::class, ['getContentFromPath']);
 
         $matcher = self::exactly(3);
 
         $subject
             ->expects($matcher)
             ->method('getContentFromPath')
-            ->willReturnCallback(
-                static function (string $errorDocumentFileName) use ($errorCode, $matcher): ?string {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertStringEndsWith('/' . $errorCode . '/1-1.html', $errorDocumentFileName),
-                        2, 3 => self::assertStringEndsWith('/' . $errorCode . '/1-0.html', $errorDocumentFileName),
-                    };
+            ->willReturnCallback(static function (string $errorDocumentFileName) use (
+                $errorCode,
+                $matcher,
+            ): ?string {
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertStringEndsWith('/' . $errorCode . '/1-1.html', $errorDocumentFileName),
+                    2, 3 => self::assertStringEndsWith('/' . $errorCode . '/1-0.html', $errorDocumentFileName),
+                };
 
-                    return null;
-                }
-            );
+                return null;
+            });
 
         $subject->getOutput($errorCode, $request);
     }
@@ -60,7 +61,7 @@ class StaticDocumentComponentTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
         $this->setUpFrontendRootPage(1);
     }
 }

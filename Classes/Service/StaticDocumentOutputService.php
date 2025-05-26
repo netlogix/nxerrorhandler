@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Netlogix\Nxerrorhandler\ErrorHandler\Component;
+namespace Netlogix\Nxerrorhandler\Service;
 
-use Netlogix\Nxerrorhandler\Service\ConfigurationService;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -13,7 +12,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Manage static error pages
  */
-class StaticDocumentComponent extends AbstractComponent
+class StaticDocumentOutputService
 {
     public function getOutput(int $errorCode, ServerRequestInterface $request, string $reason = ''): string
     {
@@ -44,30 +43,13 @@ class StaticDocumentComponent extends AbstractComponent
 
             $errorDocumentPath = ConfigurationService::getErrorDocumentFilePath();
             $errorDocumentFileNames = [
-                sprintf(
-                    $errorDocumentPath,
-                    $errorCode,
-                    $rootPageId,
-                    $siteLanguage->getLanguageId()
-                ),
-                sprintf(
-                    $errorDocumentPath,
-                    $errorCode,
-                    $rootPageId,
-                    $site->getDefaultLanguage()
-                        ->getLanguageId()
-                ),
-                sprintf(
-                    $errorDocumentPath,
-                    $errorCode,
-                    $rootPageId,
-                    $site->getDefaultLanguage()
-                        ->getLanguageId()
-                ),
+                sprintf($errorDocumentPath, $errorCode, $rootPageId, $siteLanguage->getLanguageId()),
+                sprintf($errorDocumentPath, $errorCode, $rootPageId, $site->getDefaultLanguage()->getLanguageId()),
+                sprintf($errorDocumentPath, $errorCode, $rootPageId, $site->getDefaultLanguage()->getLanguageId()),
             ];
             foreach ($errorDocumentFileNames as $errorDocumentFileName) {
                 $content = $this->getContentFromPath($errorDocumentFileName);
-                if ($content) {
+                if ($content !== null && $content !== '' && $content !== '0') {
                     return $content;
                 }
             }

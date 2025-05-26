@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Command;
 
+use RuntimeException;
 use InvalidArgumentException;
-use Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler;
-use Netlogix\Nxerrorhandler\Exception\Exception;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,20 +24,25 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class GenerateErrorPagesCommand extends Command
+#[
+    AsCommand(
+        name: 'nxerrorhandler:generateErrorPages',
+        description: 'Generates static error pages based on site configuration.',
+    ),
+]
+class GenerateErrorPagesCommand extends Command implements LoggerAwareInterface
 {
-    private int|bool|null $deploymentDate = null;
+    use LoggerAwareTrait;
 
-    private ?GeneralExceptionHandler $exceptionHandler = null;
+    private int|bool|null $deploymentDate = null;
 
     protected function configure()
     {
-        $this->setDescription('Generates static error pages based on site configuration');
         $this->addArgument(
             'forceGeneration',
             InputArgument::OPTIONAL,
             'Force regeneration of all static error pages',
-            false
+            false,
         );
     }
 
@@ -74,7 +81,14 @@ class GenerateErrorPagesCommand extends Command
             GeneralUtility::setIndpEnv('TYPO3_REQUEST_URL', (string) $site->getBase());
             foreach ($errorHandlingConfiguration as $errorCode => $configuration) {
                 foreach ($site->getLanguages() as $language) {
-                    if (!$forceGeneration && !$this->checkIfErrorPageNeedsRegeneration($errorCode, $site, $language)) {
+                    if ($language->isEnabled() === false) {
+                        continue;
+                    }
+
+                    if (
+                        !$forceGeneration &&
+                        !$this->checkIfErrorPageNeedsRegeneration($errorCode, $site, $language)
+                    ) {
                         continue;
                     }
 
@@ -87,15 +101,15 @@ class GenerateErrorPagesCommand extends Command
                     $resolvedUrl = $this->resolveUrl($request, $configuration['errorContentSource']);
                     $content = GeneralUtility::getUrl($resolvedUrl);
                     if ($content === false || $content === '') {
-                        $message = sprintf(
-                            'Could not retrieve [%1$s] error page on rootPageId [%2$d] with language [%3$d]. Requested url was "%4$s".',
-                            $errorCode,
-                            $site->getRootPageId(),
-                            $language->getLanguageId(),
-                            $resolvedUrl
+                        $this->logger->error(
+                            sprintf(
+                                'Could not retrieve [%1$s] error page on rootPageId [%2$d] with language [%3$d]. Requested url was "%4$s".',
+                                $errorCode,
+                                $site->getRootPageId(),
+                                $language->getLanguageId(),
+                                $resolvedUrl,
+                            ),
                         );
-                        $this->getExceptionHandler()
-                            ->logError(new \Exception($message, 1395152041), GeneralExceptionHandler::CONTEXT_CLI);
 
                         continue;
                     }
@@ -113,7 +127,7 @@ class GenerateErrorPagesCommand extends Command
         if (!file_exists(ConfigurationService::getErrorDocumentDirectory())) {
             GeneralUtility::mkdir(ConfigurationService::getErrorDocumentDirectory());
         } elseif (!is_dir(ConfigurationService::getErrorDocumentDirectory())) {
-            throw new Exception('Target directory is not a directory', 1394124945);
+            throw new RuntimeException('Target directory is not a directory', 1394124945);
         }
     }
 
@@ -125,15 +139,6 @@ class GenerateErrorPagesCommand extends Command
 
         $file = $this->getErrorDocumentFilePath($errorCode, $site, $language);
         GeneralUtility::writeFile($file, $content);
-    }
-
-    private function getExceptionHandler(): GeneralExceptionHandler
-    {
-        if (!$this->exceptionHandler instanceof GeneralExceptionHandler) {
-            $this->exceptionHandler = GeneralUtility::makeInstance(GeneralExceptionHandler::class);
-        }
-
-        return $this->exceptionHandler;
     }
 
     private function checkIfErrorPageNeedsRegeneration(int $errorCode, Site $site, SiteLanguage $language): bool
@@ -149,7 +154,7 @@ class GenerateErrorPagesCommand extends Command
             ConfigurationService::getErrorDocumentFilePath(),
             $errorCode,
             $site->getRootPageId(),
-            $language->getLanguageId()
+            $language->getLanguageId(),
         );
     }
 
@@ -177,7 +182,7 @@ class GenerateErrorPagesCommand extends Command
         if ($urlParams['type'] !== 'page' && $urlParams['type'] !== 'url') {
             throw new InvalidArgumentException(
                 'PageContentErrorHandler can only handle TYPO3 urls of types "page" or "url"',
-                1588933778
+                1588933778,
             );
         }
 
@@ -207,10 +212,9 @@ class GenerateErrorPagesCommand extends Command
         }
 
         // Build Url
-        $uri = $site->getRouter()
-            ->generateUri((int) $urlParams['pageuid'], [
-                '_language' => $language,
-            ]);
+        $uri = $site->getRouter()->generateUri((int) $urlParams['pageuid'], [
+            '_language' => $language,
+        ]);
 
         // Fallback to the current URL if the site is not having a proper scheme and host
         $currentUri = $request->getUri();

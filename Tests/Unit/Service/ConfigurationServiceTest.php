@@ -13,12 +13,12 @@ class ConfigurationServiceTest extends UnitTestCase
     #[Test]
     public function itCanGetErrorDocumentDirectory(): void
     {
-        self::assertNotEmpty(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertNotEmpty(ConfigurationService::getErrorDocumentDirectory());
     }
 
     #[Test]
     public function itCanGetErrorDocumentFilePath(): void
     {
-        self::assertNotEmpty(ConfigurationService::getErrorDocumentFilePath());
+        $this->assertNotEmpty(ConfigurationService::getErrorDocumentFilePath());
     }
 }

@@ -1,62 +1,56 @@
 {
-	"name": "netlogix/nxerrorhandler",
-	"description": "Error handler with static pages for TYPO3",
-	"type": "typo3-cms-extension",
-	"license": "MIT",
-	"require": {
-		"php": "^8.1",
-		"typo3/cms-core": "^12.4",
-		"typo3/cms-frontend": "^12.4",
-		"typo3/cms-extbase": "^12.4"
-	},
-	"require-dev": {
-		"ext-sqlite3": "*",
-		"ssch/typo3-rector": "^1.5",
-		"typo3/testing-framework": "^8.0",
-		"phpunit/phpcov": "^9.0",
-		"netlogix/coding-guidelines-php": "^1.0"
-	},
-	"suggest": {
-		"netlogix/nxsentry": "Send errors and exceptions to sentry"
-	},
-	"autoload": {
-		"psr-4": {
-			"Netlogix\\Nxerrorhandler\\": "Classes"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Netlogix\\Nxerrorhandler\\Tests\\": "Tests/"
-		}
-	},
-	"extra": {
-		"typo3/cms": {
-			"extension-key": "nxerrorhandler",
-			"web-dir": ".Build/public",
-			"cms-package-dir": "{$vendor-dir}/typo3/cms"
-		}
-	},
-	"config": {
-		"vendor-dir": ".Build/vendor",
-		"bin-dir": ".Build/bin",
-		"allow-plugins": {
-			"typo3/class-alias-loader": true,
-			"typo3/cms-composer-installers": true
-		}
-	},
-	"scripts": {
-		"rector": "rector process --dry-run",
-		"rector-fix": "rector process",
-		"lint": "ecs check",
-		"lint-fix": "ecs check --fix",
-		"test-unit": "phpunit -c phpunit.xml",
-		"test-functional": "phpunit -c phpunit_functional.xml",
-		"post-autoload-dump": [
-			"@prepare-extension-test-structure",
-			"mkdir -p .Build/logs/"
-		],
-		"prepare-extension-test-structure": [
-			"TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
-		]
-	}
+    "name": "netlogix/nxerrorhandler",
+    "description": "Error handler with static pages for TYPO3",
+    "license": "MIT",
+    "type": "typo3-cms-extension",
+    "require": {
+        "php": ">=8.3",
+        "typo3/cms-core": "^13.4",
+        "typo3/cms-frontend": "^13.4"
+    },
+    "require-dev": {
+        "ext-sqlite3": "*",
+        "ergebnis/composer-normalize": "^2.45",
+        "phpunit/phpcov": "^10.0",
+        "ssch/typo3-rector": "^3.0",
+        "typo3/testing-framework": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netlogix\\Nxerrorhandler\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netlogix\\Nxerrorhandler\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "bin-dir": ".Build/bin",
+        "vendor-dir": ".Build/vendor"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "nxerrorhandler",
+            "web-dir": ".Build/public"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@prepare-extension-test-structure"
+        ],
+        "composer:normalize": "@composer normalize --no-check-lock --dry-run",
+        "composer:normalize:fix": "@composer normalize --no-check-lock",
+        "composer:psr-verify": "@composer dumpautoload --optimize --strict-psr --no-plugins",
+        "php:lint": "find src -name '*.php' -print0 | xargs -r -0 -n 1 -P 4 php -l",
+        "rector": "rector process --dry-run",
+        "rector:fix": "rector process",
+        "test:functional": "phpunit -c phpunit_functional.xml",
+        "test:unit": "phpunit -c phpunit.xml"
+    }
 }

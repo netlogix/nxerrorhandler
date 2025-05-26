@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
-use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
+use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
@@ -26,7 +26,7 @@ class PageContentErrorHandlerTest extends UnitTestCase
 
         $res = $this->subject->handlePageError($req, 'fooMessage');
 
-        self::assertInstanceOf(JsonResponse::class, $res);
+        $this->assertInstanceOf(JsonResponse::class, $res);
     }
 
     #[Test]
@@ -37,31 +37,31 @@ class PageContentErrorHandlerTest extends UnitTestCase
 
         $res = $this->subject->handlePageError($req, 'fooMessage');
 
-        self::assertInstanceOf(JsonResponse::class, $res);
+        $this->assertInstanceOf(JsonResponse::class, $res);
     }
 
     #[Test]
     public function itReturnsStaticContentIfExists(): void
     {
-        $mockComponent = $this->createMock(StaticDocumentComponent::class);
+        $mockComponent = $this->createMock(StaticDocumentOutputService::class);
 
         $content = uniqid('content_');
 
-        $mockComponent->expects(self::once())->method('getOutput')->willReturn($content);
-        GeneralUtility::addInstance(StaticDocumentComponent::class, $mockComponent);
+        $mockComponent->expects($this->once())->method('getOutput')->willReturn($content);
+        GeneralUtility::addInstance(StaticDocumentOutputService::class, $mockComponent);
 
         $resp = $this->subject->handlePageError(new ServerRequest(), uniqid('message_'));
 
-        self::assertEquals($content, $resp->getBody()->getContents());
+        $this->assertSame($content, $resp->getBody()->getContents());
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)->addMethods(
-            []
-        )->disableOriginalConstructor()
+        $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)
+            ->addMethods([])
+            ->disableOriginalConstructor()
             ->getMock();
         $reflection = new ReflectionClass(PageContentErrorHandler::class);
         $reflection_property = $reflection->getProperty('statusCode');

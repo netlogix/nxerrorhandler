@@ -1,43 +1,16 @@
 # TYPO3 extension nxerrorhandler
 
-[![stability-wip](https://img.shields.io/badge/stability-wip-lightgrey.svg)](https://github.com/netlogix/nxerrorhandler)
-[![TYPO3 V12](https://img.shields.io/badge/TYPO3-12-orange.svg)](https://get.typo3.org/version/12)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)](https://php.net/)
+[![TYPO3 V13](https://img.shields.io/badge/TYPO3-13-orange.svg)](https://get.typo3.org/version/13)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.3-8892BF.svg)](https://php.net/)
 [![GitHub CI status](https://github.com/netlogix/nxerrorhandler/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/netlogix/nxerrorhandler/actions)
 
 Improves error handling in TYPO3 by using statically rendered error documents for output to reduce strain on the server.
 
-This extension is a work in progress.
+## Compatibility
+
+The current version of this extension has been tested in TYPO3 13 on PHP 8.3, 8.4.
 
 ## Usage
-
-Add this to your `config/system/settings.php`
-
-```php
-return [
-    'EXTENSIONS' => [
-        'nxerrorhandler' => [
-            'exceptionHandlerComponents' => [
-                \Netlogix\Nxerrorhandler\ErrorHandler\Component\ExtbaseArgumentsToBadRequestComponent::class,
-                \Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent::class,
-            ],
-        ]
-    ],
-    'SYS' => [
-        'productionExceptionHandler' => \Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler::class
-    ],
-];
-```
-
-Note: This will register the ExceptionHandler for all contexts including backend
-requests. If you want to restrict it to frontend requests only then add this
-line to `config/system/additional.php` instead:
-
-```php
-    if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_FE) {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['productionExceptionHandler'] = \Netlogix\Nxerrorhandler\ErrorHandler\GeneralExceptionHandler::class;
-    }
-```
 
 Add this to your `config/sites/sitename/config.yaml`
 

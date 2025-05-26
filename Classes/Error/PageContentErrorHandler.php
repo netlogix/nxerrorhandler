@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Error;
 
-use Netlogix\Nxerrorhandler\ErrorHandler\Component\StaticDocumentComponent;
+use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Error\PageErrorHandler\PageContentErrorHandler as T3PageContentErrorHandler;
@@ -17,19 +17,23 @@ class PageContentErrorHandler extends T3PageContentErrorHandler
     public function handlePageError(
         ServerRequestInterface $request,
         string $message,
-        array $reasons = []
+        array $reasons = [],
     ): ResponseInterface {
         if ($this->isJson($request)) {
             return new JsonResponse([], $this->statusCode);
         }
 
-        $staticDocumentComponent = GeneralUtility::makeInstance(StaticDocumentComponent::class);
-        $content = $staticDocumentComponent->getOutput(404, $request, $message);
-        if ($content === '') {
+        $output = GeneralUtility::makeInstance(StaticDocumentOutputService::class)->getOutput(
+            $this->statusCode,
+            $request,
+            $message,
+        );
+
+        if ($output === '') {
             return parent::handlePageError($request, $message, $reasons);
         }
 
-        return new HtmlResponse($content, $this->statusCode);
+        return new HtmlResponse($output, $this->statusCode);
     }
 
     private function isJson(ServerRequestInterface $request): bool
