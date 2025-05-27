@@ -62,7 +62,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     #[Test]
     public function itCreatesErrorDocumentDirectory(): void
     {
-        self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $subject = $this->createMock(GenerateErrorPagesCommand::class);
 
@@ -72,7 +72,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
         $reflectionMethod->invokeArgs($subject, [new StringInput(''), new NullOutput()]);
 
-        self::assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
     }
 
     #[Test]
@@ -80,17 +80,17 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
 
-        self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());
 
         $iter = new FilesystemIterator(
             ConfigurationService::getErrorDocumentDirectory(),
-            FilesystemIterator::SKIP_DOTS
+            FilesystemIterator::SKIP_DOTS,
         );
         // there should only be .htaccess
-        self::assertEquals(1, iterator_count($iter));
+        $this->assertCount(1, $iter);
     }
 
     #[Test]
@@ -98,7 +98,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
 
-        self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
         $this->setUpFrontendRootPage(1);
@@ -108,10 +108,10 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
 
         $iter = new FilesystemIterator(
             ConfigurationService::getErrorDocumentDirectory(),
-            FilesystemIterator::SKIP_DOTS
+            FilesystemIterator::SKIP_DOTS,
         );
         // there should only be .htaccess
-        self::assertEquals(1, iterator_count($iter));
+        $this->assertCount(1, $iter);
     }
 
     #[Test]
@@ -119,7 +119,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         $this->markTestIncomplete('This test has to refactored as acceptance test.');
 
-        self::assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
         $this->setUpFrontendRootPage(1);
@@ -127,14 +127,14 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         $subject = new GenerateErrorPagesCommand();
         $subject->run(new StringInput(''), new NullOutput());
 
-        self::assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
+        $this->assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory());
 
-        self::assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory() . '400');
+        $this->assertDirectoryExists(ConfigurationService::getErrorDocumentDirectory() . '400');
         $iter = new FilesystemIterator(
             ConfigurationService::getErrorDocumentDirectory() . '400',
-            FilesystemIterator::SKIP_DOTS
+            FilesystemIterator::SKIP_DOTS,
         );
         // it will create one file per language = 2 files total
-        self::assertEquals(2, iterator_count($iter));
+        $this->assertCount(2, $iter);
     }
 }

@@ -1,2 +1,0 @@
-# cat=general/; type=options[]; label=Exception handler components
-exceptionHandlerComponents =

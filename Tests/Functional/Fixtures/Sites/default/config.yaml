@@ -28,4 +28,4 @@ errorHandling:
     errorHandler: PHP
     errorPhpClassFQCN: Netlogix\Nxerrorhandler\Error\PageContentErrorHandler
     errorContentSource: 't3://page?uid=1'
-routes: { }
+routes: {}
