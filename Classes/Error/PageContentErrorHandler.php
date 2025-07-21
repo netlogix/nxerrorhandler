@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Error;
 
+use Override;
 use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,6 +15,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageContentErrorHandler extends T3PageContentErrorHandler
 {
+    #[Override]
     public function handlePageError(
         ServerRequestInterface $request,
         string $message,
