@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Functional\Command;
 
+use Override;
 use FilesystemIterator;
 use Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
@@ -36,6 +37,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         ],
     ];
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,6 +52,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         }
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         restore_exception_handler();

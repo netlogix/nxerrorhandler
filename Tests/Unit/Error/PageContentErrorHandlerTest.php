@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
+use Override;
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
 use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use PHPUnit\Framework\Attributes\Test;
@@ -55,6 +56,7 @@ class PageContentErrorHandlerTest extends UnitTestCase
         $this->assertSame($content, $resp->getBody()->getContents());
     }
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
