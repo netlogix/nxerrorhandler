@@ -92,8 +92,7 @@ class GenerateErrorPagesCommand extends Command implements LoggerAwareInterface
                         continue;
                     }
 
-                    $request = ServerRequestFactory::fromGlobals();
-                    $request
+                    $request = ServerRequestFactory::fromGlobals()
                         ->withUri($site->getBase())
                         ->withAttribute('site', $site)
                         ->withAttribute('language', $language);
