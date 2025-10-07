@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Functional\Service;
 
+use Override;
 use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -37,7 +38,7 @@ class StaticDocumentOutputServiceTest extends FunctionalTestCase
 
         $subject = $this->getAccessibleMock(StaticDocumentOutputService::class, ['getContentFromPath']);
 
-        $matcher = self::exactly(3);
+        $matcher = $this->exactly(3);
 
         $subject
             ->expects($matcher)
@@ -57,6 +58,7 @@ class StaticDocumentOutputServiceTest extends FunctionalTestCase
         $subject->getOutput($errorCode, $request);
     }
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
