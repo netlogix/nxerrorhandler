@@ -49,7 +49,7 @@ class StaticDocumentOutputService
             ];
             foreach ($errorDocumentFileNames as $errorDocumentFileName) {
                 $content = $this->getContentFromPath($errorDocumentFileName);
-                if ($content !== null && $content !== '' && $content !== '0') {
+                if (!in_array($content, [null, '', '0'], true)) {
                     return $content;
                 }
             }

@@ -8,7 +8,7 @@ use Netlogix\Nxerrorhandler\Service\ConfigurationService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class ConfigurationServiceTest extends UnitTestCase
+final class ConfigurationServiceTest extends UnitTestCase
 {
     #[Test]
     public function itCanGetErrorDocumentDirectory(): void

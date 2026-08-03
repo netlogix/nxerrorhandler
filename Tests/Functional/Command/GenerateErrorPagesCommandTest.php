@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Functional\Command;
 
-use Override;
 use FilesystemIterator;
 use Netlogix\Nxerrorhandler\Command\GenerateErrorPagesCommand;
 use Netlogix\Nxerrorhandler\Service\ConfigurationService;
@@ -16,7 +15,7 @@ use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class GenerateErrorPagesCommandTest extends FunctionalTestCase
+final class GenerateErrorPagesCommandTest extends FunctionalTestCase
 {
     protected array $pathsToLinkInTestInstance = [
         'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites',
@@ -37,11 +36,9 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         ],
     ];
 
-    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->purgeCreatedDirectoriesAndFiles();
     }
 
@@ -52,13 +49,10 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
         }
     }
 
-    #[Override]
     protected function tearDown(): void
     {
         restore_exception_handler();
-
         parent::tearDown();
-
         $this->purgeCreatedDirectoriesAndFiles();
     }
 
@@ -67,7 +61,7 @@ class GenerateErrorPagesCommandTest extends FunctionalTestCase
     {
         $this->assertDirectoryDoesNotExist(ConfigurationService::getErrorDocumentDirectory());
 
-        $subject = $this->createMock(GenerateErrorPagesCommand::class);
+        $subject = $this->createStub(GenerateErrorPagesCommand::class);
 
         $reflectionObject = new ReflectionObject($subject);
         $reflectionMethod = $reflectionObject->getMethod('initialize');

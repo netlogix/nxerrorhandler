@@ -194,11 +194,11 @@ class GenerateErrorPagesCommand extends Command implements LoggerAwareInterface
             $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int) $urlParams['pageuid']);
         } catch (SiteNotFoundException) {
             // Fall back to current request for the site
-            $site = $request->getAttribute('site', null);
+            $site = $request->getAttribute('site');
         }
 
         /** @var SiteLanguage $requestLanguage */
-        $requestLanguage = $request->getAttribute('language', null);
+        $requestLanguage = $request->getAttribute('language');
         // Try to get the current request language from the site that was found above
         if ($requestLanguage instanceof SiteLanguage) {
             try {
