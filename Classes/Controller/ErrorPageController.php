@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Controller;
 
+use Override;
+use Throwable;
 use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
@@ -13,6 +15,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Autoconfigure(public: true)]
 readonly class ErrorPageController extends \TYPO3\CMS\Core\Controller\ErrorPageController
 {
+    #[Override]
     public function errorAction(
         string $title,
         string $message,
@@ -25,7 +28,7 @@ readonly class ErrorPageController extends \TYPO3\CMS\Core\Controller\ErrorPageC
                 $this->getRequest(),
                 $message,
             );
-        } catch (\Throwable) {
+        } catch (Throwable) {
             $output = '';
         }
 
@@ -41,6 +44,7 @@ readonly class ErrorPageController extends \TYPO3\CMS\Core\Controller\ErrorPageC
         if (array_key_exists('TYPO3_REQUEST', $GLOBALS)) {
             return $GLOBALS['TYPO3_REQUEST'];
         }
+
         return ServerRequestFactory::fromGlobals();
     }
 }
