@@ -42,7 +42,7 @@ final class GenerateErrorPagesCommandTest extends FunctionalTestCase
         $this->purgeCreatedDirectoriesAndFiles();
     }
 
-    protected function purgeCreatedDirectoriesAndFiles()
+    protected function purgeCreatedDirectoriesAndFiles(): void
     {
         if (is_dir(ConfigurationService::getErrorDocumentDirectory())) {
             GeneralUtility::rmdir(ConfigurationService::getErrorDocumentDirectory(), true);
