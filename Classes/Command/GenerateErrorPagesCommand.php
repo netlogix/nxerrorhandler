@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\ServerRequestFactory;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -92,8 +92,7 @@ class GenerateErrorPagesCommand extends Command implements LoggerAwareInterface
                         continue;
                     }
 
-                    $request = ServerRequestFactory::fromGlobals()
-                        ->withUri($site->getBase())
+                    $request = (new ServerRequest($site->getBase()))
                         ->withAttribute('site', $site)
                         ->withAttribute('language', $language);
 
