@@ -7,7 +7,7 @@
         {
             "files": ["*.php"],
             "options": {
-                "phpVersion": "8.3",
+                "phpVersion": "8.4",
                 "printWidth": 115,
                 "plugins": ["@prettier/plugin-php"]
             }

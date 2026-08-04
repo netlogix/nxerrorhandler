@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Functional\Service;
 
-use Override;
 use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -13,7 +12,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class StaticDocumentOutputServiceTest extends FunctionalTestCase
+final class StaticDocumentOutputServiceTest extends FunctionalTestCase
 {
     protected array $pathsToLinkInTestInstance = [
         'typo3conf/ext/nxerrorhandler/Tests/Functional/Fixtures/Sites' => 'typo3conf/sites',
@@ -58,11 +57,9 @@ class StaticDocumentOutputServiceTest extends FunctionalTestCase
         $subject->getOutput($errorCode, $request);
     }
 
-    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
         $this->setUpFrontendRootPage(1);
     }

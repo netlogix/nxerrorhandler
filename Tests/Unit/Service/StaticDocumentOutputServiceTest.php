@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class StaticDocumentOutputServiceTest extends UnitTestCase
+final class StaticDocumentOutputServiceTest extends UnitTestCase
 {
     #[Test]
     public function itAddsCurrentUrlToErrorDocument(): void

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Netlogix\Nxerrorhandler\Tests\Unit\Error;
 
-use Override;
 use Netlogix\Nxerrorhandler\Error\PageContentErrorHandler;
 use Netlogix\Nxerrorhandler\Service\StaticDocumentOutputService;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,7 +14,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class PageContentErrorHandlerTest extends UnitTestCase
+final class PageContentErrorHandlerTest extends UnitTestCase
 {
     private MockObject&PageContentErrorHandler $subject;
 
@@ -56,11 +55,9 @@ class PageContentErrorHandlerTest extends UnitTestCase
         $this->assertSame($content, $resp->getBody()->getContents());
     }
 
-    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->subject = $this->getMockBuilder(PageContentErrorHandler::class)
             ->addMethods([])
             ->disableOriginalConstructor()
